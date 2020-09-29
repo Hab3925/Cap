@@ -1,0 +1,58 @@
+[{
+    "name": "CLAIM_DRILLSHIP",
+    "role": "750269133513424967"
+}, {
+    "name": "KILL_COGS_10",
+    "role": "750269215604473877"
+}, {
+    "name": "MINE_COAL_100",
+    "role": "750269321661644841"
+}, {
+    "name": "MINE_COAL_1000",
+    "role": "750269381937856532"
+}, {
+    "name": "KILL_COGS_100",
+    "role": "750271086637350913"
+}, {
+    "name": "SEGMENTS_2",
+    "role": "750271284922810380"
+}, {
+    "name": "MINE_TECH",
+    "role": "750271353692618773"
+}, {
+    "name": "VICTORY",
+    "role": "750271415600807998"
+}, {
+    "name": "SILENCE_1",
+    "role": "750271693720649728"
+}, {
+    "name": "SILENCE_2",
+    "role": "750271753930014810"
+}, {
+    "name": "SILENCE_3",
+    "role": "750271807382093875"
+}, {
+    "name": "EXTRA_PROTECTION",
+    "role": "750271877997396028"
+}, {
+    "name": "DONT_DISTURB",
+    "role": "750271955059605535"
+}, {
+    "name": "SEGMENTS_4",
+    "role": "750272014895284290"
+}, {
+    "name": "CONTROL_STATIONS_RUNNING_5",
+    "role": "750272057077661738"
+}, {
+    "name": "WIN_NO_TUTORIAL",
+    "role": "750272113503633479"
+}, {
+    "name": "WIN_FAST",
+    "role": "750272163873030186"
+}, {
+    "name": "SINGLE_POWER_PLANT",
+    "role": "750272246081388616"
+}, {
+    "name": "SINGLE_CARGO_MODULE",
+    "role": "750272349974036501"
+}]

@@ -1,0 +1,22 @@
+{
+  "cog": "NTE4Nzk1MDA5NTg0MjY3MjY5.D0DRQg.3pxhTXLGp6TcmWT0lhuOiiG-9b0",
+  "cap": "NDg4NDE4ODcxNzQ1OTcwMTc3.XLpAlA.cgqJjjp002h4-inRiQCGNuQt0Uw",
+  "download": "https://store.steampowered.com/app/951440/Volcanoids/",
+  "dev": [
+    "188762891137056769"
+  ],
+  "volcdev": [
+    "443527289347768352",
+    "511188437622063104",
+    "256915616282181632",
+    "188762891137056769"
+  ],
+  "codev": [],
+  "connection": {
+    "host": "109.189.62.160",
+    "user": "thecaptain",
+    "password": "g0W9V7ckGA",
+    "database": "g9qEFHRkGb",
+    "charset": "utf8mb4_unicode_ci"
+  }
+}
