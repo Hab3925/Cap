@@ -12,7 +12,7 @@ module.exports.run = async (client, message, args) => {
 exports.help = {
     name: "delete",
     desc: "bulk delete messages",
-    aliases: [],
+    aliases: ["clear","purge"],
     permLvl: 1,
     hidden: false,
     category: "admin",
