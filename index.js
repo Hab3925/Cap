@@ -10,7 +10,7 @@ const {
 } = require("util");
 const readdir = promisify(require("fs").readdir);
 const readline = require("readline");
-let token = "cog";
+let token = "cap";
 let table;
 let GSTable;
 
@@ -305,7 +305,7 @@ client.on("message", async message => {
 
 					if (profilePic == null)
 						profilePic =
-							"https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
+						"https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
 					if (user === undefined || user === null)
 						return con.query(
 							`INSERT INTO ${table} (ID, UserID, Nickname, xp, level, profilePic, percentageToNextLvl, requieredXp, totalxp, colour, rankCard, boosts, guildID) VALUES (NULL, "${message.author.id}", "${nickname}", "${gainedXp}", 0, "${profilePic}", ${gainedXp}, "100", "${gainedXp}", "#C54816", 0, 0, ${message.guild.id})`
@@ -359,9 +359,9 @@ client.on("message", async message => {
 							`UPDATE ${table} SET Nickname = '${nickname}' WHERE UserID = ${message.author.id} AND guildID='${message.guild.id}'`
 						);
 					if (user.profilePic !== message.author.avatarURL({
-						format: 'png',
-						size: 2048
-					}))
+							format: 'png',
+							size: 2048
+						}))
 						con.query(
 							`UPDATE ${table} SET profilePic = '${profilePic}' WHERE UserID = ${message.author.id}`
 						);
@@ -412,12 +412,22 @@ client.on("message", async message => {
 			"You dont have the permission to use this command!"
 		);
 	if (message.guild.id !== "444244464903651348") {
-		if (
-			cmd.help.category == "volc" &&
-			message.author.id !== "188762891137056769"
-		)
-			return;
+		if (cmd.help.category == "volc" && message.author.id !== "188762891137056769") return;
 	}
+
+	/*client.disabledCmds.forEach((c, i) => {
+		if (i == message.guild.id) {
+			if (!c[0]) return
+			console.log(c)
+			c.forEach(o => {
+				if (o.channel == message.channel.id && o.command == cmd.help.name) {
+					return message.channel.send("This command is disabled in this channel.")
+				}
+			})
+		}
+
+	})*/
+
 	console.log(`| ${timestamp} | ${message.guild} | ${message.author.tag} | ${cmd.help.name}`);
 	cmd.run(client, message, args, prefix, con, table, permlvl, GSTable);
 
@@ -434,12 +444,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -448,12 +458,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);

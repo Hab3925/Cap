@@ -1,15 +1,15 @@
 module.exports.run = async (client, message, args, prefix, con, table, permLvl, GSTable) => {
     const Discord = require('discord.js');
 
-    if(!args[0]){
+    if (!args[0]) {
 
         let embed = new Discord.MessageEmbed()
-        .setTimestamp()
-        .setTitle("Disabled commands:")
+            .setTimestamp()
+            .setTitle("Disabled commands:")
         client.disabledCmds.forEach(g => {
             let channels = [];
             console.log(g)
-            if(g.has(message.guild.id)){
+            if (g.has(message.guild.id)) {
                 g[message.guild.id].forEach(c => {
                     channels.push(`<#${c}>`)
                 })
@@ -25,14 +25,14 @@ module.exports.run = async (client, message, args, prefix, con, table, permLvl, 
         if (!cmd || cmd.help.permLvl > permLvl) return message.channel.send(`You didn\'t select a command, do ${prefix}help to view what commands you can disable in this channel`);
     }
 
-    if(args[0].toLowerCase() == 'all'){
-        
+    if (args[0].toLowerCase() == 'all') {
+
     }
-    
 
 
 
-/*
+
+
     con.query(`SELECT lockedChannels FROM ${GSTable} WHERE guildID = ${message.guild.id}`, async function (err, result) {
         if (result[0].lockedChannels == '') {
             message.channel.send("Something went wrong! Please try again!")
@@ -50,7 +50,7 @@ module.exports.run = async (client, message, args, prefix, con, table, permLvl, 
             let embed = new Discord.MessageEmbed() //yes commented code go brr
                 .setTimestamp()
                 .setTitle("Disabled commands")
-                
+
 
             return message.channel.send(embed)
         }
@@ -94,7 +94,7 @@ module.exports.run = async (client, message, args, prefix, con, table, permLvl, 
         lockedChannels.push(dbObject)
         con.query(`UPDATE ${GSTable} SET lockedChannels = '${JSON.stringify(lockedChannels)}' WHERE guildID = ${message.guild.id}`)
         message.channel.send(`The command \`${args[0]}\` can no longer be used in ${args[1]}.`)
-    });*/
+    });
 }
 
 exports.help = {
