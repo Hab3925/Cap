@@ -9,25 +9,27 @@ module.exports.run = async (client, message, args, prefix, con, table, permLvl, 
         client.disabledCmds.forEach(g => {
             let channels = [];
             console.log(g)
-            if (g.has(message.guild.id)) {
+            if (g.includes(message.guild.id)) {
                 g[message.guild.id].forEach(c => {
                     channels.push(`<#${c}>`)
                 })
             }
-            embed.addField(g, channels.join("\n"))
+            embed.addField(g, channels[0]?channels.join("\n"):"none")
         });
         message.channel.send(embed)
+        return
     }
 
     if (!message.guild.channels.has(args[1].replace(/<|#|>/g, ''))) return message.channel.send('This is not a channel in this server!');
     let cmd = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
-    if (args[0].toLowerCase() != 'all') {
-        if (!cmd || cmd.help.permLvl > permLvl) return message.channel.send(`You didn\'t select a command, do ${prefix}help to view what commands you can disable in this channel`);
-    }
+    if (!cmd || cmd.help.permLvl > permLvl) return message.channel.send(`You didn\'t select a command, do ${prefix}help to view what commands you can disable in this channel`);
+    // if (args[0].toLowerCase() != 'all') {
+    //     if (!cmd || cmd.help.permLvl > permLvl) return message.channel.send(`You didn\'t select a command, do ${prefix}help to view what commands you can disable in this channel`);
+    // }
 
-    if (args[0].toLowerCase() == 'all') {
+    // if (args[0].toLowerCase() == 'all') {
 
-    }
+    // }
 
 
 
@@ -41,7 +43,7 @@ module.exports.run = async (client, message, args, prefix, con, table, permLvl, 
         let lockedChannels = JSON.parse(result[0].lockedChannels)
 
         const Discord = require('discord.js');
-        if (!args[0]) {
+        if (!args[0]) { //why the fuck does everything exist two times?
             let disCmds = [];
 
 

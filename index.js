@@ -10,7 +10,7 @@ const {
 } = require("util");
 const readdir = promisify(require("fs").readdir);
 const readline = require("readline");
-let token = "cap";
+let token = "cog";
 let table;
 let GSTable;
 
@@ -138,7 +138,8 @@ client.on("message", async message => {
 	} catch (e) {
 		console.log(message.author + "\n\nCaused:" + e)
 	}
-	if (~config.volcdev.indexOf(message.author.id)) permlvl = 3
+	if (~config.volcdev.indexOf(message.author.id)) permlvl = 3;
+	if (~config.codev.indexOf(message.author.id)) permlvl = 5;
 	if (~config.dev.indexOf(message.author.id)) permlvl = 6;
 
 	//Automod
@@ -184,6 +185,7 @@ client.on("message", async message => {
 								timeout: 5000
 							}))
 							r.message.reactions.cache.forEach(re => re.remove())
+							m.delete({timeout: 10000})
 							return
 						}
 					}, {
@@ -223,6 +225,7 @@ client.on("message", async message => {
 								timeout: 5000
 							}))
 							r.message.reactions.cache.forEach(re => re.remove())
+							m.delete({timeout: 10000})
 							return
 						}
 					}, {
@@ -412,7 +415,7 @@ client.on("message", async message => {
 			"You dont have the permission to use this command!"
 		);
 	if (message.guild.id !== "444244464903651348") {
-		if (cmd.help.category == "volc" && message.author.id !== "188762891137056769") return;
+		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
 
 	/*client.disabledCmds.forEach((c, i) => {

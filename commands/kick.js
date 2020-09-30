@@ -6,8 +6,8 @@ const inline = false
 module.exports.run = async (client, message, args) => {
     let reason='unspecified';if(args[1])reason=args.join(' ').replace(`${args[0]}`,'')
     let user = message.mentions.users.first();
-    if(user.id==client.user.id)return message.reply(`I can't kick myself dude.`)
     if(!user)return message.reply('you forgot to mention someone.')
+    if(user.id==client.user.id)return message.reply(`I can't kick myself dude.`)
     let member = message.guild.members.cache.get(user.id);
     if(client.permlvl<5){if(member.permissions.has("MANAGE_MESSAGES", true)||member.permissions.has("ADMINISTRATOR", true)||client.guilds.cache.get('546008502754082830').roles.cache.get('552758121789915136').members.map(m=>m.user.id).includes(user.id))return message.reply(`you can't kick a Moderator!`)}
     if(!member.kickable)return message.reply(`I dont have enough permissions to perform this action!`)

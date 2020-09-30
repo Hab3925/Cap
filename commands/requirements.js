@@ -36,6 +36,14 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
             .setColor("#E1941D")
         msg.edit('', embed)
 
+    } else {
+        let embed = new Discord.MessageEmbed()
+            .setTitle("Windows requirements")
+            .addField('\u200B', body['951440'].data.pc_requirements.minimum.replace(/<.?strong>/gm, "**").replace(/<li>/gm, "\r\n - ").replace(/<.+?>/gm, ""), true)
+            .addField('\u200B', body['951440'].data.pc_requirements.recommended.replace(/<.?strong>/gm, "**").replace(/<li>/gm, "\r\n - ").replace(/<.+?>/gm, ""), true)
+            .setColor("#3FB22D")
+        msg.edit('', embed)
+        
     }
 }
 
