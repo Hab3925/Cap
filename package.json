@@ -1,7 +1,6 @@
 {
   "name": "cap",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "dependencies": {
     "better-sqlite-pool": "^0.2.3",
@@ -17,6 +16,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Hab",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hab3925/Cap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hab3925/Cap/issues"
+  },
+  "homepage": "https://github.com/Hab3925/Cap#readme",
+  "description": ""
 }
