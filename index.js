@@ -195,7 +195,7 @@ client.on("message", async message => {
 					}, 60000);
 				}, 200);
 			})
-		} else if (message.content.match(/(when('s|s)? it coming out)|(is it out yet)|(where can.*?(get|buy).*?(this|game)|(where|how).*?download)|(is.*?(this|game|it) free)|(what.*?(get|buy|is).*?(this|game|it) on)/gmi)) {
+		} else if (message.content.match(/(when('s|s| is)? it coming out)|(is (it|this) (out|released) yet)|(where can.*?(get|buy).*?(this|game)|(where|how).*?download)|((is|will).*?(this|game|it)( (?!only)[^ ]+?)? (free|on steam))|(what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on)|(how much.*?(this|game|it) cost)|(how much is( the)? (this|it|game|volcanoids?))/gmi)) {
 			let thumbsUp = client.emojis.cache.get("713469848193073303")
 			let thumbsDown = client.emojis.cache.get("722120016723574805")
 			message.channel.send(`You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/ \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!
