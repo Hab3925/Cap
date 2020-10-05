@@ -17,6 +17,23 @@ let GSTable;
 const mysql = require("mysql");
 let con = mysql.createConnection(config.connection);
 
+let thumbsUp
+let thumbsDown
+let consoleAutoreplyRegex = CreateAutoReplyRegex([`console.*(will|game|to|available)`,
+												`(will|game|to|available).*console`,
+												`xbox.*(will|game|to|available)`,
+												`(will|game|to|available).*xbox`,
+												`(ps4|ps5).*(will|game|to|available)`,
+												`(will|game|to|available).*(ps4|ps5|playstation)`],
+												`igm`);
+let steamAutoreplyRegex = CreateAutoReplyRegex([`when('s|s| is)? it coming out`,
+												`is (it|this|the game) (out|released)( yet)?`,
+												`where can.*?(get|buy).*?(this|game)|(where|how).*?download`,
+												`(is|if|will)( [^ ]+?)? (this|game|it)( (?!only)[^ ]+?)? (free|on steam)`,
+												`what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on`,
+												`how much.*?(this|game|it) cost`],
+												`igm`);
+
 const Enmap = require("enmap");
 client.commands = new Enmap();
 client.aliases = new Enmap();
@@ -82,6 +99,10 @@ client.on("ready", async () => {
 		type: "PLAYING"
 	});
 	//client.achievements()
+
+	// Init some global vars so we don't have to do this on each command.
+	thumbsUp = client.emojis.cache.get("713469848193073303");
+	thumbsDown = client.emojis.cache.get("722120016723574805");
 });
 
 client.on("guildCreate", guild => {
@@ -160,86 +181,11 @@ client.on("message", async message => {
 
 	// Autoreply
 	if (message.guild.id == "444244464903651348" && message.channel.id !== "496325967883534337") {
-		if (message.content.match(/(console.*(will|game|to|available)|(will|game|to|available).*console)|(xbox.*(will|game|to|available)|(will|game|to|available).*xbox)|((ps4|ps5).*(will|game|to|available)|(will|game|to|available).*(ps4|ps5|playstation))/gmi)) {
-			let thumbsUp = client.emojis.cache.get("713469848193073303")
-			let thumbsDown = client.emojis.cache.get("722120016723574805")
-			message.channel.send(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you ? (react with ${thumbsUp}) Or was it misplaced ? (react with ${thumbsDown}) Thanks for the input!
-	`).then(async m => {
-				await m.react(thumbsUp)
-				await m.react(thumbsDown)
-				setTimeout(() => {
-					m.createReactionCollector(async r => {
-						if (r.emoji.id == thumbsUp.id) {
-							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
-							client.autoreply.set("good", client.autoreply.get("good") + 1)
-							m.edit(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.`)
-							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
-								timeout: 5000
-							}))
-							r.message.reactions.cache.forEach(re => re.remove())
-							return
-						} else if (r.emoji.id == thumbsDown.id) {
-							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
-							client.autoreply.set("bad", client.autoreply.get("bad") + 1)
-							m.edit(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.`)
-							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
-								timeout: 5000
-							}))
-							r.message.reactions.cache.forEach(re => re.remove())
-							m.delete({ timeout: 10000 })
-							return
-						}
-					}, {
-						time: 60000
-					})
-					setTimeout(() => {
-						m.edit("**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.")
-						m.reactions.cache.forEach(re => re.remove())
-					}, 60000);
-				}, 200);
-			})
-		} else if (message.content.match(/(when('s|s| is)? it coming out)|(is (it|this|the game) (out|released)( yet)?)|(where can.*?(get|buy).*?(this|game)|(where|how).*?download)|((is|if|will)( [^ ]+?)? (this|game|it)( (?!only)[^ ]+?)? (free|on steam))|(what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on)|(how much.*?(this|game|it) cost)|(how much is( the)? (this|it|game|volcanoids?))/gmi)) {
-			let thumbsUp = client.emojis.cache.get("713469848193073303")
-			let thumbsDown = client.emojis.cache.get("722120016723574805")
-			message.channel.send(`You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/ \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!
-			`).then(async m => {
-				await m.react(thumbsUp)
-				await m.react(thumbsDown)
-				setTimeout(() => {
-					m.createReactionCollector(async r => {
-						if (r.emoji.id == thumbsUp.id) {
-							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
-							client.autoreply.set("good", client.autoreply.get("good") + 1)
-							m.edit(`You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/	\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`)
-							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
-								timeout: 5000
-							}))
-							r.message.reactions.cache.forEach(re => re.remove())
-							return
-						} else if (r.emoji.id == thumbsDown.id) {
-							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}%`)
-							client.autoreply.set("bad", client.autoreply.get("bad") + 1)
-							m.edit(`**You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`)
-							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
-								timeout: 5000
-							}))
-							r.message.reactions.cache.forEach(re => re.remove())
-							m.delete({ timeout: 10000 })
-							return
-						}
-					}, {
-						time: 60000
-					})
-					setTimeout(() => {
-						m.edit("You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.")
-						m.reactions.cache.forEach(re => re.remove())
-					}, 60000);
-				}, 200);
-			})
+		if (consoleAutoreplyRegex.match(message.content)) {
+			CreateAutoReply(message, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
+		}
+		if (steamAutoreplyRegex.match(message.content)) {
+			CreateAutoReply(message, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
 		}
 	}
 
@@ -474,3 +420,68 @@ client.on("guildUpdate", (oldGuild, newGuild) => {
 
 client.on("error", console.error);
 client.login(config[token]);
+
+function CreateAutoReplyRegex(individualLinesToMatch, flags, ignoreQuotedText = true, ignoreCodeText = true) {
+	let regexStr = ``;
+
+	individualLinesToMatch.forEach((line, index) => {
+		let toMatch = line
+		if (index > 0) regexStr += `|`;
+
+		// Broken. Doesn't work for lines that start directly with the part we're matching.
+		//if (ignoreCodeText === true) toMatch = `[^\`]${toMatch}[^\`]`
+
+		if (ignoreQuotedText === true) toMatch = `^(?!>).*?${toMatch}`;
+
+		regexStr += `(${toMatch})`
+	});
+
+	console.log(`Made Regex: ${regexStr}`);
+
+	return RegExp(regexStr, flags);
+}
+
+function CreateAutoReply(message, response, includeCheckFaqMsgInResponse = true) {
+	if (includeCheckFaqMsgInResponse === true) {
+		response += `\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`;
+	}
+
+	message.channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you ? (react with ${thumbsUp}) Or was it misplaced ? (react with ${thumbsDown}) Thanks for the input!`)
+		.then(async (m) => {
+			await m.react(thumbsUp);
+			await m.react(thumbsDown);
+			setTimeout(() => {
+				m.createReactionCollector(async (r) => {
+					if (r.emoji.id == thumbsUp.id) {
+						let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673");
+						statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `);
+						client.autoreply.set("good", client.autoreply.get("good") + 1);
+						m.edit(response);
+						ShowThanksForFeedback(r);
+						return;
+					} else if (r.emoji.id == thumbsDown.id) {
+						let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673");
+						statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `);
+						client.autoreply.set("bad", client.autoreply.get("bad") + 1);
+						m.edit(response);
+						m.delete({ timeout: 10000 });
+						ShowThanksForFeedback(r);
+						return;
+					}
+				}, {
+					time: 60000
+				});
+				setTimeout(() => {
+					m.edit(response);
+					m.reactions.cache.forEach(re => re.remove());
+				}, 60000);
+			}, 200);
+		});
+
+	function ShowThanksForFeedback(r) {
+		message.channel.send("Thanks for the feedback").then(mess => mess.delete({
+			timeout: 5000
+		}));
+		r.message.reactions.cache.forEach(re => re.remove());
+	}
+}
