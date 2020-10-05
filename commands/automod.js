@@ -4,7 +4,8 @@ module.exports.run = async (client, message, args) => {
     let bannedWords = client.automod.get(message.guild.id)
 
     if(!args[0]) {
-        if(!bannedWords[0] || !bannedWords) return message.channel.send(`Im not automoderating any words in this server yet! Start auto moderating word with this command: \`${exports.help.usage}\``)
+        if(!bannedWords) return message.channel.send(`Im not automoderating any words in this server yet! Start auto moderating word with this command: \`${exports.help.usage}\``)
+        if(!bannedWords[0]) return message.channel.send(`Im not automoderating any words in this server yet! Start auto moderating word with this command: \`${exports.help.usage}\``)
         let embed = new Discord.MessageEmbed()
         .setTimestamp()
         .setTitle("Banned words")
