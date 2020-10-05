@@ -150,7 +150,7 @@ client.on("message", async message => {
 					message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);
 					if (!client.logchn.has(message.guild.id)) return
 					if (client.logchn.get(message.guild.id) != "disabled") {
-						message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Automatically deleted message by ${messag.author.tag}: \n${message.content}`)
+						message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
 					}
 					return
 				}
@@ -163,17 +163,17 @@ client.on("message", async message => {
 		if (message.content.match(/(console.*(will|game|to|available)|(will|game|to|available).*console)|(xbox.*(will|game|to|available)|(will|game|to|available).*xbox)|((ps4|ps5).*(will|game|to|available)|(will|game|to|available).*(ps4|ps5|playstation))/gmi)) {
 			let thumbsUp = client.emojis.cache.get("713469848193073303")
 			let thumbsDown = client.emojis.cache.get("722120016723574805")
-			message.channel.send(`**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!
-				`).then(async m => {
+			message.channel.send(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you ? (react with ${thumbsUp}) Or was it misplaced ? (react with ${thumbsDown}) Thanks for the input!
+	`).then(async m => {
 				await m.react(thumbsUp)
 				await m.react(thumbsDown)
 				setTimeout(() => {
 					m.createReactionCollector(async r => {
 						if (r.emoji.id == thumbsUp.id) {
 							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}%`)
+							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
 							client.autoreply.set("good", client.autoreply.get("good") + 1)
-							m.edit(`**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`)
+							m.edit(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.`)
 							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
 								timeout: 5000
 							}))
@@ -181,9 +181,9 @@ client.on("message", async message => {
 							return
 						} else if (r.emoji.id == thumbsDown.id) {
 							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}%`)
+							statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
 							client.autoreply.set("bad", client.autoreply.get("bad") + 1)
-							m.edit(`**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`)
+							m.edit(`** Volcanoids **? On ** consoles **? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans.That Rich guy will keep you updated! \n\nIf you have any other questions, make sure to read the <#454972890299891723 >, your question might be already answered there.`)
 							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
 								timeout: 5000
 							}))
@@ -204,14 +204,14 @@ client.on("message", async message => {
 			let thumbsUp = client.emojis.cache.get("713469848193073303")
 			let thumbsDown = client.emojis.cache.get("722120016723574805")
 			message.channel.send(`You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/ \n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!
-				`).then(async m => {
+			`).then(async m => {
 				await m.react(thumbsUp)
 				await m.react(thumbsDown)
 				setTimeout(() => {
 					m.createReactionCollector(async r => {
 						if (r.emoji.id == thumbsUp.id) {
 							let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673")
-							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}%`)
+							statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `)
 							client.autoreply.set("good", client.autoreply.get("good") + 1)
 							m.edit(`You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/	\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`)
 							message.channel.send("Thanks for the feedback").then(mess => mess.delete({
@@ -270,7 +270,10 @@ client.on("message", async message => {
 							.then(msg => msg.delete({
 								timeout: 5000
 							}));
-						client.channels.cache.get("523288694514515969").send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+						if (!client.logchn.has(message.guild.id)) return
+						if (client.logchn.get(message.guild.id) != "disabled") {
+							message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+						}
 						return;
 					}
 					if (attatchment[0].width <= 100 && attatchment[0].height <= 100) {
@@ -280,7 +283,10 @@ client.on("message", async message => {
 							.then(msg => msg.delete({
 								timeout: 5000
 							}));
-						client.channels.cache.get("523288694514515969").send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+						if (!client.logchn.has(message.guild.id)) return
+						if (client.logchn.get(message.guild.id) != "disabled") {
+							message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+						}
 						return;
 					}
 				}
