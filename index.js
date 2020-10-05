@@ -19,19 +19,23 @@ let con = mysql.createConnection(config.connection);
 
 let thumbsUp
 let thumbsDown
-let consoleAutoreplyRegex = CreateAutoReplyRegex([`console.*(will|game|to|available)`,
-												`(will|game|to|available).*console`,
-												`xbox.*(will|game|to|available)`,
-												`(will|game|to|available).*xbox`,
-												`(ps4|ps5).*(will|game|to|available)`,
-												`(will|game|to|available).*(ps4|ps5|playstation)`],
+let consoleAutoreplyRegex = CreateAutoReplyRegex([
+													`console.*(will|game|to|available)`,
+													`(will|game|to|available).*console`,
+													`xbox.*(will|game|to|available)`,
+													`(will|game|to|available).*xbox`,
+													`(ps4|ps5).*(will|game|to|available)`,
+													`(will|game|to|available).*(ps4|ps5|playstation)`
+												],
 												`igm`);
-let steamAutoreplyRegex = CreateAutoReplyRegex([`when('s|s| is)? it coming out`,
-												`is (it|this|the game) (out|released)( yet)?`,
-												`where can.*?(get|buy).*?(this|game)|(where|how).*?download`,
-												`(is|if|will)( [^ ]+?)? (this|game|it)( (?!only)[^ ]+?)? (free|on steam)`,
-												`what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on`,
-												`how much.*?(this|game|it) cost`],
+let steamAutoreplyRegex = CreateAutoReplyRegex([
+													`when('s|s| is)? it coming out`,
+													`is (it|this|the game) (out|released)( yet)?`,
+													`where can.*?(get|buy).*?(this|game)|(where|how).*?download`,
+													`(is|if|will)( [^ ]+?)? (this|game|it)( (?!only)[^ ]+?)? (free|on steam)`,
+													`what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on`,
+													`how much.*?(this|game|it) cost`
+												],
 												`igm`);
 
 const Enmap = require("enmap");
@@ -182,10 +186,10 @@ client.on("message", async message => {
 	// Autoreply
 	if (message.guild.id == "444244464903651348" && message.channel.id !== "496325967883534337") {
 		if (consoleAutoreplyRegex.match(message.content)) {
-			CreateAutoReply(message, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
 		}
 		if (steamAutoreplyRegex.match(message.content)) {
-			CreateAutoReply(message, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
 		}
 	}
 
@@ -421,7 +425,15 @@ client.on("guildUpdate", (oldGuild, newGuild) => {
 client.on("error", console.error);
 client.login(config[token]);
 
-function CreateAutoReplyRegex(individualLinesToMatch, flags, ignoreQuotedText = true, ignoreCodeText = true) {
+/**
+ * Pass an array of individual regex to match. This will merge them into one pattern.
+ *
+ * @param individualLinesToMatch Patterns to merge.
+ * @param flags                  (Optional) Regex flags to use.
+ * @param ignoreQuotedText       (Optional) Makes sure each individual pattern ignores lines that start with `>`.
+ * @param ignoreCodeText         (Optional) Makes sure each individual pattern ignores matches surrounded with `. (Currently broken.)
+ */
+function CreateAutoReplyRegex(individualLinesToMatch, flags = "", ignoreQuotedText = true, ignoreCodeText = true) {
 	let regexStr = ``;
 
 	individualLinesToMatch.forEach((line, index) => {
@@ -441,12 +453,20 @@ function CreateAutoReplyRegex(individualLinesToMatch, flags, ignoreQuotedText = 
 	return RegExp(regexStr, flags);
 }
 
-function CreateAutoReply(message, response, includeCheckFaqMsgInResponse = true) {
+/**
+ * Creates a reply on the given channel with the response text.
+ * Also handles waiting for feedback.
+ *
+ * @param channel                      The channel to send the message to.
+ * @param response                     The text to use as the base for the message.
+ * @param includeCheckFaqMsgInResponse (Optional) Whether to append the canned message about checking the FAQ to the end of the response message.
+ */
+function CreateAutoReply(channel, response, includeCheckFaqMsgInResponse = true) {
 	if (includeCheckFaqMsgInResponse === true) {
 		response += `\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`;
 	}
 
-	message.channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you ? (react with ${thumbsUp}) Or was it misplaced ? (react with ${thumbsDown}) Thanks for the input!`)
+	channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!`)
 		.then(async (m) => {
 			await m.react(thumbsUp);
 			await m.react(thumbsDown);
@@ -478,8 +498,9 @@ function CreateAutoReply(message, response, includeCheckFaqMsgInResponse = true)
 			}, 200);
 		});
 
+	// Local func so we don't have to repeat it for each potential emoji reply.
 	function ShowThanksForFeedback(r) {
-		message.channel.send("Thanks for the feedback").then(mess => mess.delete({
+		channel.send("Thanks for the feedback").then(mess => mess.delete({
 			timeout: 5000
 		}));
 		r.message.reactions.cache.forEach(re => re.remove());
