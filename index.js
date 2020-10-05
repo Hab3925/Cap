@@ -89,7 +89,6 @@ client.on("guildCreate", guild => {
 	console.log(`| New Guild | ${guild.name} - ${guild.memberCount}`);
 	var query = `INSERT INTO ${GSTable} (guildID, roles, prefix, guildName, guildIcon, lockedChannels, members) VALUE ('${guild.id}', '[]','.','${name}','${guild.iconURL({ format: 'png', size: 2048 })}', '[]','${guild.memberCount}');`;
 	con.query(query);
-
 });
 
 client.on("guildDelete", guild => {
@@ -148,7 +147,11 @@ client.on("message", async message => {
 			client.automod.get(message.guild.id).forEach(m => {
 				if (msgContent.join("").toLowerCase().match(m)) {
 					message.delete()
-					if (permlvl <= 1) message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);
+					message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);
+					if (!client.logchn.has(message.guild.id)) return
+					if (client.logchn.get(message.guild.id) != "disabled") {
+						message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Automatically deleted message by ${messag.author.tag}: \n${message.content}`)
+					}
 					return
 				}
 			})
@@ -417,19 +420,6 @@ client.on("message", async message => {
 	if (message.guild.id !== "444244464903651348") {
 		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
-
-	/*client.disabledCmds.forEach((c, i) => {
-		if (i == message.guild.id) {
-			if (!c[0]) return
-			console.log(c)
-			c.forEach(o => {
-				if (o.channel == message.channel.id && o.command == cmd.help.name) {
-					return message.channel.send("This command is disabled in this channel.")
-				}
-			})
-		}
-
-	})*/
 
 	console.log(`| ${timestamp} | ${message.guild} | ${message.author.tag} | ${cmd.help.name}`);
 	cmd.run(client, message, args, prefix, con, table, permlvl, GSTable);
