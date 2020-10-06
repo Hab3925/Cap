@@ -29,12 +29,12 @@ let consoleAutoreplyRegex = CreateAutoReplyRegex([
 												],
 												`igm`);
 let steamAutoreplyRegex = CreateAutoReplyRegex([
-													`when('s|s| is)? it coming out`,
-													`is (it|this|the game) (out|released)( yet)?`,
-													`where can.*?(get|buy).*?(this|game)|(where|how).*?download`,
-													`(is|if|will)( [^ ]+?)? (this|game|it)( (?!only)[^ ]+?)? (free|on steam)`,
-													`what.*?(get|buy|is).*?(this|game|it|be)( [^ ]+?)? on`,
-													`how much.*?(this|game|it) cost`
+													`when('s|s| is)? (it|this|the game|volcanoids) coming out`,
+													`is (it|this|the game|volcanoids) (out|released)( yet)?`,
+													`where can.*?(get|buy).*?(this|game|volcanoids)|(where|how).*?download`,
+													`(is|if|will)( [^ ]+?)? (this|game|it|volcanoids)( (?!only)[^ ]+?)? (free|on steam)`,
+													`what.*?(get|buy|is).*?(this|game|it|volcanoids|be)( [^ ]+?)? on`,
+													`how much.*?(this|game|it|volcanoids) cost`
 												],
 												`igm`);
 
