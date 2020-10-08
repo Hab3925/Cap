@@ -29,12 +29,16 @@ let consoleAutoreplyRegex = CreateAutoReplyRegex([
 												],
 												`igm`);
 let steamAutoreplyRegex = CreateAutoReplyRegex([
-													`when('s|s| is)? (it|this|the game|volcanoids) coming out`,
-													`is (it|this|the game|volcanoids) (out|released)( yet)?`,
-													`where can.*?(get|buy).*?(this|game|volcanoids)|(where|how).*?download`,
-													`(is|if|will)( [^ ]+?)? (this|game|it|volcanoids)( (?!only)[^ ]+?)? (free|on steam)`,
-													`what.*?(get|buy|is).*?(this|game|it|volcanoids|be)( [^ ]+?)? on`,
-													`how much.*?(this|game|it|volcanoids) cost`
+													`when('s|s| is)? (it|this|the game|volcanoid(s?)) coming out`,
+													`is (it|this|the game|volcanoid(s?)) (out|released|available)( yet)?`,
+													`(where|how) can.*?(get|buy|play).*?(this|game|volcanoid(s?))`,
+													`(where|how).*?download`,
+													`(is|if|will)( [^ \\n]+?)? (this|game|it|volcanoid(s?))( (?!only)[^ \\n]+?)? (free|on steam)`,
+													`what.*?(get|buy|is).*?(this|game|it|volcanoid(s?)|be)( [^ \\n]+?)? on`,
+													`how much.*?(this|game|it|volcanoid(s?)) cost`,
+													`how much is.*?(this|game|it|volcanoid(s?))`,
+													`can i play (this|game|it|volcanoid(s?)) now`,
+													`price in (usd|dollars|aud|cad)`
 												],
 												`igm`);
 
