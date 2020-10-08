@@ -36,8 +36,8 @@ let steamAutoreplyRegex = CreateAutoReplyRegex([
 													`(is|if|will)( [^ \\n]+?)? (this|game|it|volcanoid(s?))( (?!only)[^ \\n]+?)? (free|on steam)`,
 													`what.*?(get|buy|is).*?(this|game|it|volcanoid(s?)|be)( [^ \\n]+?)? on`,
 													`how much.*?(this|game|it|volcanoid(s?)) cost`,
-													`how much is.*?(this|game|it|volcanoid(s?))`,
-													`can i play (this|game|it|volcanoid(s?)) now`,
+													`how (much|many)( [^ \\n]+?)? is( (that|the|this))? (game|it|volcanoid(s?))`,
+													`can i play( [^ \\n]+?)? (this|game|it|volcanoid(s?)) now`,
 													`price in (usd|dollars|aud|cad)`
 												],
 												`igm`);
