@@ -1,3 +1,31 @@
+// Quick switch between testing mode & regular mode.
+const isTesting = true;
+const token = isTesting? "cog" : "cap";
+
+// Discord IDs.
+
+// Server
+const volcanoidsServerId = "444244464903651348";
+const captainsSubmarineServerId = "488708757304639520";
+
+// Channel
+const discussOtherGamesChannelId = "496325967883534337";
+const autoReplyFeedbackChannelId = "754675846132006972";
+const faqChannelId = "454972890299891723";
+
+// Message
+const autoReplyFeedbackMessageId = "754702829976944673";
+
+// Emoji
+const thumbsUpId_cogHand = "713469848193073303"; // :cogLike:
+const thumbsUpId_testing = "545279802198851615"; // :kappa:
+const thumbsUpId = isTesting? thumbsUpId_testing : thumbsUpId_cogHand;
+
+const thumbsDownId_cogHand = "722120016723574805"; // :cogThumbsDown:
+const thumbsDownId_testing = "546734308161749011"; // :Shotgun:
+const thumbsDownId = isTesting? thumbsDownId_testing : thumbsDownId_cogHand;
+
+// Other constants.
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./storage/config.json");
@@ -10,15 +38,14 @@ const {
 } = require("util");
 const readdir = promisify(require("fs").readdir);
 const readline = require("readline");
-let token = "cog";
 let table;
 let GSTable;
 
 const mysql = require("mysql");
 let con = mysql.createConnection(config.connection);
 
-let thumbsUp
-let thumbsDown
+let thumbsUp;
+let thumbsDown;
 let consoleAutoreplyRegex = CreateAutoReplyRegex([
 													`console.*(will|game|to|available)`,
 													`(will|game|to|available).*console`,
@@ -105,8 +132,8 @@ client.on("ready", async () => {
 	//client.achievements()
 
 	// Init some global vars so we don't have to do this on each command.
-	thumbsUp = client.emojis.cache.get("713469848193073303");
-	thumbsDown = client.emojis.cache.get("722120016723574805");
+	thumbsUp = client.emojis.cache.get(thumbsUpId);
+	thumbsDown = client.emojis.cache.get(thumbsDownId);
 });
 
 client.on("guildCreate", guild => {
@@ -183,12 +210,12 @@ client.on("message", async message => {
 		}
 	}
 
-	// Autoreply
-	if (message.guild.id == "444244464903651348" && message.channel.id !== "496325967883534337") {
-		if (consoleAutoreplyRegex.match(message.content)) {
+	// Autoreply (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
+	if ((isTesting || message.guild.id == volcanoidsServerId) && message.channel.id !== discussOtherGamesChannelId) {
+		if (consoleAutoreplyRegex.exec(message.content)) {
 			CreateAutoReply(message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
 		}
-		if (steamAutoreplyRegex.match(message.content)) {
+		if (steamAutoreplyRegex.exec(message.content)) {
 			CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
 		}
 	}
@@ -342,7 +369,7 @@ client.on("message", async message => {
 		message.channel.send(`My prefix on this server is ${prefix}`);
 
 	if (
-		message.guild.id === "444244464903651348" &&
+		message.guild.id === volcanoidsServerId &&
 		msgContent.includes(".roadmap") &&
 		command !== "roadmap"
 	) {
@@ -352,7 +379,7 @@ client.on("message", async message => {
 		console.log(`| ${timestamp} | ${message.author.tag} | roadmap`);
 	}
 	if (
-		message.guild.id === "444244464903651348" &&
+		message.guild.id === volcanoidsServerId &&
 		msgContent.includes(".diaries") &&
 		command !== "diaries"
 	) {
@@ -373,7 +400,7 @@ client.on("message", async message => {
 		return message.channel.send(
 			"You dont have the permission to use this command!"
 		);
-	if (message.guild.id !== "444244464903651348") {
+	if (message.guild.id !== volcanoidsServerId) {
 		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
 
@@ -463,7 +490,7 @@ function CreateAutoReplyRegex(individualLinesToMatch, flags = "", ignoreQuotedTe
  */
 function CreateAutoReply(channel, response, includeCheckFaqMsgInResponse = true) {
 	if (includeCheckFaqMsgInResponse === true) {
-		response += `\n\nIf you have any other questions, make sure to read the <#454972890299891723>, your question might be already answered there.`;
+		response += `\n\nIf you have any other questions, make sure to read the <#${faqChannelId}>, your question might be already answered there.`;
 	}
 
 	channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!`)
@@ -472,19 +499,26 @@ function CreateAutoReply(channel, response, includeCheckFaqMsgInResponse = true)
 			await m.react(thumbsDown);
 			setTimeout(() => {
 				m.createReactionCollector(async (r) => {
+					let currentGood = client.autoreply.get("good");
+					let currentBad = client.autoreply.get("bad");
+
 					if (r.emoji.id == thumbsUp.id) {
-						let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673");
-						statsMsg.edit(`Good response: ${client.autoreply.get("good") + 1} | Bad response: ${client.autoreply.get("bad")} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `);
-						client.autoreply.set("good", client.autoreply.get("good") + 1);
+						currentGood++;
+						await UpdateAutoReplyStats(currentGood, currentBad);
+						client.autoreply.set("good", currentGood);
+
 						m.edit(response);
+
 						ShowThanksForFeedback(r);
 						return;
 					} else if (r.emoji.id == thumbsDown.id) {
-						let statsMsg = await client.guilds.cache.get("488708757304639520").channels.cache.get("754675846132006972").messages.fetch("754702829976944673");
-						statsMsg.edit(`Good response: ${client.autoreply.get("good")} | Bad response: ${client.autoreply.get("bad") + 1} | Ratio: ${Math.floor(client.autoreply.get("good") / (client.autoreply.get("good") + client.autoreply.get("bad")) * 100)}% `);
-						client.autoreply.set("bad", client.autoreply.get("bad") + 1);
+						currentBad++;
+						await UpdateAutoReplyStats(currentGood, currentBad);
+						client.autoreply.set("bad", currentBad);
+
 						m.edit(response);
 						m.delete({ timeout: 10000 });
+
 						ShowThanksForFeedback(r);
 						return;
 					}
@@ -497,6 +531,18 @@ function CreateAutoReply(channel, response, includeCheckFaqMsgInResponse = true)
 				}, 60000);
 			}, 200);
 		});
+
+	// Shows the new status ratio.
+	async function UpdateAutoReplyStats(currentGood, currentBad) {
+		const newStatusMessage = `Good response: ${currentGood} | Bad response: ${currentBad} | Ratio: ${Math.floor(currentGood / (currentGood + currentBad) * 100)}%`;
+
+		if (isTesting) { // CogBot cannot edit Cap's stats post.
+			console.log(newStatusMessage);
+		} else {
+			let statsMsg = await client.guilds.cache.get(captainsSubmarineServerId).channels.cache.get(autoReplyFeedbackChannelId).messages.fetch(autoReplyFeedbackMessageId);
+			statsMsg.edit(newStatusMessage);
+		}
+	}
 
 	// Local func so we don't have to repeat it for each potential emoji reply.
 	function ShowThanksForFeedback(r) {
