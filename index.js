@@ -55,16 +55,19 @@ let consoleAutoreplyRegex = CreateAutoReplyRegex([
 													`(will|game|to|available).*(ps4|ps5|playstation)`
 												],
 												`igm`);
+
+// A var since I keep copying the "the game", "it", "this", etc in many of these.
+const theGameRegex = `( (that|the|this))?( (game|it|volcanoid(s?)))?`;
 let steamAutoreplyRegex = CreateAutoReplyRegex([
-													`when('s|s| is)? (it|this|the game|volcanoid(s?)) coming out`,
-													`is (it|this|the game|volcanoid(s?)) (out|released|available)( yet)?`,
-													`(where|how) can.*?(get|buy|play).*?(this|game|volcanoid(s?))`,
+													`when('s|s| is)?${theGameRegex} (come|coming) out`,
+													`is${theGameRegex} (out|released|available)( yet)?`,
+													`(where|how) can.*?(get|buy|play).*?${theGameRegex}`,
 													`(where|how).*?download`,
-													`(is|if|will)( [^ \\n]+?)? (this|game|it|volcanoid(s?))( (?!only)[^ \\n]+?)? (free|on steam)`,
-													`what.*?(get|buy|is).*?(this|game|it|volcanoid(s?)|be)( [^ \\n]+?)? on`,
-													`how much.*?(this|game|it|volcanoid(s?)) cost`,
-													`how (much|many)( [^ \\n]+?)? is( (that|the|this))? (game|it|volcanoid(s?))`,
-													`can i play( [^ \\n]+?)? (this|game|it|volcanoid(s?)) now`,
+													`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
+													`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
+													`how much.*?${theGameRegex} cost`,
+													`how (much|many)( [^ \\n]+?)? is${theGameRegex}`,
+													`can i play( [^ \\n]+?)?${theGameRegex} now`,
 													`price in (usd|dollars|aud|cad)`
 												],
 												`igm`);
