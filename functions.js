@@ -7,6 +7,13 @@ module.exports = (client) => {
         }
     }
 
+    /**
+     * Waits for the user to reply to a message, and returns the reply
+     * @param {object} msg          The message object
+     * @param {string} question     Question you want the user to reply to
+     * @param {number} limit        How long it should wait for the reply before returning
+     * @param {boolean} del         If you want to delete the message after they replied (optinal)
+     */
     client.awaitReply = async (msg, question, limit, del) => {
         const filter = m => m.author.id === msg.author.id;
         const m = await msg.channel.send(question);
@@ -26,6 +33,10 @@ module.exports = (client) => {
         }
     };
 
+    /**
+     * Fetches command to enmap database
+     * @param commandName Name fo the command to fetch
+     */
     client.loadcommand = (commandName) => {
         try {
             const props = require(`./commands/${commandName}`);
@@ -39,6 +50,11 @@ module.exports = (client) => {
         }
     }
 
+    /**
+     * Calculates the difference between two unix timestamps
+     * @param {number} start   First timestamp
+     * @param {number} stop    Second timestamp
+     */
     client.timeDiff = (start, stop) => {
         var distance = stop - start;
         var weeks = Math.floor(distance / (1000 * 60 * 60 * 24 * 7));
@@ -72,6 +88,12 @@ module.exports = (client) => {
         });
     }
 
+    /**
+     * Gets the rankembed for a given user
+     * @param {object} user     User object
+     * @param {number} rank     Rank of user
+     * @param {number} design   Design ID of user
+     */
     client.rankcard = (user, rank, design) => {
         if (design == undefined) design = user.rankCard;
         switch (design) {
@@ -84,6 +106,12 @@ module.exports = (client) => {
         }
     }
 
+    /**
+     * Calculates the rank of a user from a server
+     * @param {object} result   Database result
+     * @param {string} id       Users ID
+     * @param {string} guildID  Servers ID
+     */
     client.rank = (result, id, guildID) => {
         i = 0;
         let output = null;
@@ -94,6 +122,10 @@ module.exports = (client) => {
         return output;
     }
 
+    /**
+     * Generates a string of random characters
+     * @param length Length of string
+     */
     client.makekey = (length) => {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -104,6 +136,10 @@ module.exports = (client) => {
         return result;
     }
 
+    /**
+     * Finds the index of argument in array that matches "|"
+     * @param a Array of arguments
+     */
     client.titleEnd = (a) => {
         let i = 1;
         while (i < a.length) {
@@ -115,6 +151,11 @@ module.exports = (client) => {
         return 0
     }
 
+    /**
+     * Convert Unix time to "ddd at hh:mm"
+     * @param ct        Unix time number
+     * @param timezone  Offset from UTC in hours
+     */
     client.computerToHumanTime = async (ct, timezone) => {
         return new Promise(async (resolve, reject) => {
             if (!timezone) timezone = 0
@@ -130,7 +171,13 @@ module.exports = (client) => {
         })
     }
 
-
+    /**
+     * EXPIRIMENTAL
+     * @param {*} humanTime 
+     * @param {*} msg 
+     * @param {*} con 
+     * @param {*} event 
+     */
     client.humanToComputerTime = async (humanTime, msg, con, event) => {
         return new Promise(async (resolve, reject) => {
             let i;
@@ -375,8 +422,9 @@ module.exports = (client) => {
         })
     }
 
-    // Checks achivements by users and gives roles accordingly
-
+    /**
+     * Checks a users achivements once every day, and updates roles
+     */
     client.achievements = async () => {
         const superagent = require("superagent")
         const roles = require("./storage/achievements.json")
@@ -411,6 +459,10 @@ module.exports = (client) => {
         }, 86400000)
     }
 
+    /**
+     * Gives a user a role for an achivement
+     * @param {string} id User ID for user to give role
+     */
     client.giveAchievementRole = async (id) => {
         const superagent = require("superagent")
         const roles = require("./storage/achievements.json")
