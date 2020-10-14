@@ -506,8 +506,8 @@ function CreateAutoReply(channel, response, includeCheckFaqMsgInResponse = true)
 			await m.react(thumbsDown);
 			setTimeout(() => {
 				m.createReactionCollector(async (r) => {
-					let currentGood = client.autoreply.get("good");
-					let currentBad = client.autoreply.get("bad");
+					let currentGood = parseInt(client.autoreply.get("good"));
+					let currentBad = parseInt(client.autoreply.get("bad"));
 
 					if (r.emoji.id == thumbsUp.id) {
 						currentGood++;
