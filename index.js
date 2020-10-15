@@ -162,6 +162,9 @@ require("./embeds.js")(client);
 client.on("message", async message => {
 	if (!message.guild) return;
 
+	const originatingServerId = message.guild.id;
+	const originatingChannelId = message.channel.id;
+
 	if (message.author.bot) return;
 	if (!client.prefixes.has(message.guild.id)) {
 		let name = message.guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
@@ -217,6 +220,55 @@ client.on("message", async message => {
 		}
 	}
 
+
+	// Image Only
+	// By running this before the other commands, we both stop the user from getting XP from this and stop bot replies from remaining in the image-only channel.
+	let imageOnlyChannelIds = client.ImageOnly.get("channels");
+
+	if (imageOnlyChannelIds && imageOnlyChannelIds.includes(originatingChannelId)) {
+		if (msg.startsWith(prefix) && command == "unlock" && permlvl >= 2) {
+			// Passing the outermost if guarantees that our originating channel ID must be in the array so it's safe to assume that indexOf will always find a valid entry.
+			imageOnlyChannelIds.splice(imageOnlyChannelIds.indexOf(originatingChannelId), 1);
+			client.ImageOnly.set("channels", imageOnlyChannelIds);
+			return message.channel.send("This channel has been unlocked");
+		}
+		let attatchment = message.attachments.array();
+		if (permlvl <= 2) {
+			if (
+				!message.content.match(
+					/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
+				)
+			) {
+				if (!attatchment[0]) {
+					message.delete();
+					message.channel
+						.send("You can only send images in this channel.")
+						.then(msg => msg.delete({
+							timeout: 5000
+						}));
+					if (!client.logchn.has(originatingServerId)) return
+					if (client.logchn.get(originatingServerId) != "disabled") {
+						message.guild.channels.cache.get(client.logchn.get(originatingServerId)).send(`Deleted message in <#${originatingChannelId}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+					}
+					return;
+				}
+				if (attatchment[0].width <= 100 && attatchment[0].height <= 100) {
+					message.delete();
+					message.channel
+						.send("You can only send images in this channel")
+						.then(msg => msg.delete({
+							timeout: 5000
+						}));
+					if (!client.logchn.has(originatingServerId)) return
+					if (client.logchn.get(originatingServerId) != "disabled") {
+						message.guild.channels.cache.get(client.logchn.get(originatingServerId)).send(`Deleted message in <#${originatingChannelId}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+					}
+					return;
+				}
+			}
+		}
+	}
+
 	// Autoreply (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
 	if ((isTesting || message.guild.id == volcanoidsServerId) && message.channel.id !== discussOtherGamesChannelId) {
 		if (consoleAutoreplyRegex.exec(message.content)) {
@@ -226,57 +278,6 @@ client.on("message", async message => {
 			CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
 		}
 	}
-
-
-	// Image Only
-	client.ImageOnly.get("channels").forEach(c => {
-		if (c == message.channel.id) {
-			if (msg.startsWith(prefix) && command == "unlock" && permlvl >= 2) {
-				let channels = [];
-				client.ImageOnly.get("channels").forEach(c => {
-					if (c == message.channel.id) return;
-					channels.push(c);
-				});
-				client.ImageOnly.set("channels", channels);
-				return message.channel.send("This channel has been unlocked");
-			}
-			let attatchment = message.attachments.array();
-			if (permlvl <= 2) {
-				if (
-					!message.content.match(
-						/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi
-					)
-				) {
-					if (!attatchment[0]) {
-						message.delete();
-						message.channel
-							.send("You can only send images in this channel.")
-							.then(msg => msg.delete({
-								timeout: 5000
-							}));
-						if (!client.logchn.has(message.guild.id)) return
-						if (client.logchn.get(message.guild.id) != "disabled") {
-							message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
-						}
-						return;
-					}
-					if (attatchment[0].width <= 100 && attatchment[0].height <= 100) {
-						message.delete();
-						message.channel
-							.send("You can only send images in this channel")
-							.then(msg => msg.delete({
-								timeout: 5000
-							}));
-						if (!client.logchn.has(message.guild.id)) return
-						if (client.logchn.get(message.guild.id) != "disabled") {
-							message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
-						}
-						return;
-					}
-				}
-			}
-		}
-	});
 
 
 	// Updating the members in the database
@@ -482,7 +483,7 @@ function CreateAutoReplyRegex(individualLinesToMatch, flags = "", ignoreQuotedTe
 		regexStr += `(${toMatch})`
 	});
 
-	console.log(`Made Regex: ${regexStr}`);
+	//console.log(`Made Regex: ${regexStr}`);
 
 	return RegExp(regexStr, flags);
 }
