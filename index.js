@@ -59,9 +59,9 @@ let consoleAutoreplyRegex = CreateAutoReplyRegex([
 // A var since I keep copying the "the game", "it", "this", etc in many of these.
 const theGameRegex = `( (that|the|this))?( (game|it|volcanoid(s?)))?`;
 let steamAutoreplyRegex = CreateAutoReplyRegex([
-													`when('s|s| is)?${theGameRegex} (come|coming) out`,
+													`when(('|’)s|s| is)?${theGameRegex} (come|coming) out`,
 													`is${theGameRegex} (out|released|available)( yet)?`,
-													`(where|how) can.*?(get|buy|play).*?${theGameRegex}`,
+													`(where|how) (can|do).*?(get|buy|play).*?${theGameRegex}`,
 													`(where|how).*?download`,
 													`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
 													`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
