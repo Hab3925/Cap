@@ -488,4 +488,104 @@ module.exports = (client) => {
             }
         })
     }
+    /**
+ * Pass an array of individual regex to match. This will merge them into one pattern.
+ *
+ * @param individualLinesToMatch Patterns to merge.
+ * @param flags                  (Optional) Regex flags to use.
+ * @param ignoreQuotedText       (Optional) Makes sure each individual pattern ignores lines that start with `>`.
+ * @param ignoreCodeText         (Optional) Makes sure each individual pattern ignores matches surrounded with `. (Currently broken.)
+ */
+    function CreateAutoReplyRegex(individualLinesToMatch, flags = "", ignoreQuotedText = true, ignoreCodeText = true) {
+        let regexStr = ``;
+
+        individualLinesToMatch.forEach((line, index) => {
+            let toMatch = line
+            if (index > 0) regexStr += `|`;
+
+            // Broken. Doesn't work for lines that start directly with the part we're matching.
+            //if (ignoreCodeText === true) toMatch = `[^\`]${toMatch}[^\`]`
+
+            if (ignoreQuotedText === true) toMatch = `^(?!>).*?${toMatch}`;
+
+            regexStr += `(${toMatch})`
+        });
+
+        //console.log(`Made Regex: ${regexStr}`);
+
+        return RegExp(regexStr, flags);
+    }
+
+    /**
+     * Creates a reply on the given channel with the response text.
+     * Also handles waiting for feedback.
+     *
+     * @param channel                      The channel to send the message to.
+     * @param response                     The text to use as the base for the message.
+     * @param includeCheckFaqMsgInResponse (Optional) Whether to append the canned message about checking the FAQ to the end of the response message.
+     */
+    client.CreateAutoReply = async (channel, response, includeCheckFaqMsgInResponse = true) => {
+        if (includeCheckFaqMsgInResponse === true) {
+            response += `\n\nIf you have any other questions, make sure to read the <#${faqChannelId}>, your question might be already answered there.`;
+        }
+
+        channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!`)
+            .then(async (m) => {
+                await m.react(thumbsUp);
+                await m.react(thumbsDown);
+                setTimeout(() => {
+                    m.createReactionCollector(async (r) => {
+                        let currentGood = parseInt(client.autoreply.get("good"));
+                        let currentBad = parseInt(client.autoreply.get("bad"));
+
+                        if (r.emoji.id == thumbsUp.id) {
+                            currentGood++;
+                            await UpdateAutoReplyStats(currentGood, currentBad);
+                            client.autoreply.set("good", currentGood);
+
+                            m.edit(response);
+
+                            ShowThanksForFeedback(r);
+                            return;
+                        } else if (r.emoji.id == thumbsDown.id) {
+                            currentBad++;
+                            await UpdateAutoReplyStats(currentGood, currentBad);
+                            client.autoreply.set("bad", currentBad);
+
+                            m.edit(response);
+                            m.delete({ timeout: 10000 });
+
+                            ShowThanksForFeedback(r);
+                            return;
+                        }
+                    }, {
+                        time: 60000
+                    });
+                    setTimeout(() => {
+                        m.edit(response);
+                        m.reactions.cache.forEach(re => re.remove());
+                    }, 60000);
+                }, 200);
+            });
+
+        // Shows the new status ratio.
+        client.UpdateAutoReplyStats = async (currentGood, currentBad) => {
+            const newStatusMessage = `Good response: ${currentGood} | Bad response: ${currentBad} | Ratio: ${Math.floor(currentGood / (currentGood + currentBad) * 100)}%`;
+
+            if (isTesting) { // CogBot cannot edit Cap's stats post.
+                console.log(newStatusMessage);
+            } else {
+                let statsMsg = await client.guilds.cache.get(captainsSubmarineServerId).channels.cache.get(autoReplyFeedbackChannelId).messages.fetch(autoReplyFeedbackMessageId);
+                statsMsg.edit(newStatusMessage);
+            }
+        }
+
+        // Local func so we don't have to repeat it for each potential emoji reply.
+        client.ShowThanksForFeedback = async (r) => {
+            channel.send("Thanks for the feedback").then(mess => mess.delete({
+                timeout: 5000
+            }));
+            r.message.reactions.cache.forEach(re => re.remove());
+        }
+    }
 }
