@@ -84,6 +84,7 @@ module.exports = (client) => {
 
     client.connect = (con) => {
         con.connect(function (err) {
+            if (err) throw err
             console.log(`Connected to sql database`);
         });
     }
@@ -489,14 +490,14 @@ module.exports = (client) => {
         })
     }
     /**
- * Pass an array of individual regex to match. This will merge them into one pattern.
- *
- * @param individualLinesToMatch Patterns to merge.
- * @param flags                  (Optional) Regex flags to use.
- * @param ignoreQuotedText       (Optional) Makes sure each individual pattern ignores lines that start with `>`.
- * @param ignoreCodeText         (Optional) Makes sure each individual pattern ignores matches surrounded with `. (Currently broken.)
- */
-    function CreateAutoReplyRegex(individualLinesToMatch, flags = "", ignoreQuotedText = true, ignoreCodeText = true) {
+     * Pass an array of individual regex to match. This will merge them into one pattern.
+     *
+     * @param individualLinesToMatch Patterns to merge.
+     * @param flags                  (Optional) Regex flags to use.
+     * @param ignoreQuotedText       (Optional) Makes sure each individual pattern ignores lines that start with `>`.
+     * @param ignoreCodeText         (Optional) Makes sure each individual pattern ignores matches surrounded with `. (Currently broken.)
+     */
+    client.CreateAutoReplyRegex = (individualLinesToMatch, flags = "", ignoreQuotedText = true, ignoreCodeText = true) => {
         let regexStr = ``;
 
         individualLinesToMatch.forEach((line, index) => {
@@ -553,7 +554,9 @@ module.exports = (client) => {
                             client.autoreply.set("bad", currentBad);
 
                             m.edit(response);
-                            m.delete({ timeout: 10000 });
+                            m.delete({
+                                timeout: 10000
+                            });
 
                             ShowThanksForFeedback(r);
                             return;

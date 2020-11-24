@@ -1,6 +1,6 @@
 // Quick switch between testing mode & regular mode.
 const isTesting = true;
-const token = isTesting? "cog" : "cap";
+const token = isTesting ? "cog" : "cap";
 
 // Discord IDs.
 
@@ -19,16 +19,15 @@ const autoReplyFeedbackMessageId = "754702829976944673";
 // Emoji
 const thumbsUpId_cogHand = "713469848193073303"; // :cogLike:
 const thumbsUpId_testing = "545279802198851615"; // :kappa:
-const thumbsUpId = isTesting? thumbsUpId_testing : thumbsUpId_cogHand;
+const thumbsUpId = isTesting ? thumbsUpId_testing : thumbsUpId_cogHand;
 
 const thumbsDownId_cogHand = "722120016723574805"; // :cogThumbsDown:
 const thumbsDownId_testing = "546734308161749011"; // :Shotgun:
-const thumbsDownId = isTesting? thumbsDownId_testing : thumbsDownId_cogHand;
+const thumbsDownId = isTesting ? thumbsDownId_testing : thumbsDownId_cogHand;
 
 // Other constants.
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const config = require("./storage/config.json");
 let cooldown = new Set();
 const {
 	promisify
@@ -42,35 +41,13 @@ let table;
 let GSTable;
 
 const mysql = require("mysql");
-let con = mysql.createConnection(config.connection);
-
-let thumbsUp;
-let thumbsDown;
-let consoleAutoreplyRegex = CreateAutoReplyRegex([
-													`console.*(will|game|to|available)`,
-													`(will|game|to|available).*console`,
-													`xbox.*(will|game|to|available)`,
-													`(will|game|to|available).*xbox`,
-													`(ps4|ps5).*(will|game|to|available)`,
-													`(will|game|to|available).*(ps4|ps5|playstation)`
-												],
-												`igm`);
-
-// A var since I keep copying the "the game", "it", "this", etc in many of these.
-const theGameRegex = `( (that|the|this))?( (game|it|volcanoid(s?)))?`;
-let steamAutoreplyRegex = CreateAutoReplyRegex([
-													`when(('|’)s|s| is)?${theGameRegex} (come|coming) out`,
-													`is${theGameRegex} (out|released|available)( yet)?`,
-													`(where|how) (can|do).*?(get|buy|play).*?${theGameRegex}`,
-													`(where|how).*?download`,
-													`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
-													`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
-													`how much.*?${theGameRegex} cost`,
-													`how (much|many)( [^ \\n]+?)? is${theGameRegex}`,
-													`can i play( [^ \\n]+?)?${theGameRegex} now`,
-													`price in (usd|dollars|aud|cad)`
-												],
-												`igm`);
+let con = mysql.createConnection({
+	host: process.env.capConH,
+	user: process.env.capConU,
+	password: process.env.capConP,
+	database: process.env.capConD,
+	charset: process.env.capConC
+});
 
 const Enmap = require("enmap");
 client.commands = new Enmap();
@@ -138,10 +115,12 @@ client.on("ready", async () => {
 	});
 	//client.achievements()
 
-	// Init some global vars so we don't have to do this on each command.
-	thumbsUp = client.emojis.cache.get(thumbsUpId);
-	thumbsDown = client.emojis.cache.get(thumbsDownId);
+
 });
+
+// Init some global vars so we don't have to do this on each command.
+thumbsUp = client.emojis.cache.get(thumbsUpId);
+thumbsDown = client.emojis.cache.get(thumbsDownId);
 
 client.on("guildCreate", guild => {
 	let name = guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
@@ -158,6 +137,32 @@ client.on("guildDelete", guild => {
 
 require("./functions")(client);
 require("./embeds.js")(client);
+
+let consoleAutoreplyRegex = client.CreateAutoReplyRegex([
+	`console.*(will|game|to|available)`,
+	`(will|game|to|available).*console`,
+	`xbox.*(will|game|to|available)`,
+	`(will|game|to|available).*xbox`,
+	`(ps4|ps5).*(will|game|to|available)`,
+	`(will|game|to|available).*(ps4|ps5|playstation)`
+],
+	`igm`);
+
+// A var since I keep copying the "the game", "it", "this", etc in many of these.
+const theGameRegex = `( (that|the|this))?( (game|it|volcanoid(s?)))?`;
+let steamAutoreplyRegex = client.CreateAutoReplyRegex([
+	`when(('|’)s|s| is)?${theGameRegex} (come|coming) out`,
+	`is${theGameRegex} (out|released|available)( yet)?`,
+	`(where|how) (can|do).*?(get|buy|play).*?${theGameRegex}`,
+	`(where|how).*?download`,
+	`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
+	`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
+	`how much.*?${theGameRegex} cost`,
+	`how (much|many)( [^ \\n]+?)? is${theGameRegex}`,
+	`can i play( [^ \\n]+?)?${theGameRegex} now`,
+	`price in (usd|dollars|aud|cad)`
+],
+	`igm`);
 
 client.on("message", async message => {
 	if (!message.guild) return;
@@ -199,9 +204,9 @@ client.on("message", async message => {
 	} catch (e) {
 		console.log(message.author + "\n\nCaused:" + e)
 	}
-	if (~config.volcdev.indexOf(message.author.id)) permlvl = 3;
-	if (~config.codev.indexOf(message.author.id)) permlvl = 5;
-	if (~config.dev.indexOf(message.author.id)) permlvl = 6;
+	//if (~config.volcdev.indexOf(message.author.id)) permlvl = 3;
+	//if (~config.codev.indexOf(message.author.id)) permlvl = 5;
+	if (message.author.id == "188762891137056769") permlvl = 6;
 
 	//Automod
 	if (command !== "automod") {
@@ -252,6 +257,7 @@ client.on("message", async message => {
 					}
 					return;
 				}
+				console.log(attatchment[0])
 				if (attatchment[0].width <= 100 && attatchment[0].height <= 100) {
 					message.delete();
 					message.channel
@@ -289,7 +295,7 @@ client.on("message", async message => {
 			con.query(
 				`SELECT UserID, Nickname, xp, profilePic, level, totalxp FROM ${table} WHERE UserID = ${message.author.id} AND guildID = ${message.guild.id}`,
 				function (err, result) {
-					if (err) throw err;
+					//if (err) throw err;
 					let gainedXp = Math.floor(Math.random() * 10 + 15);
 					let user = result[0];
 					let profilePic = message.author.avatarURL({
@@ -458,4 +464,4 @@ client.on("guildUpdate", (oldGuild, newGuild) => {
 });
 
 client.on("error", console.error);
-client.login(config[token]);
+client.login(process.env[token]);
