@@ -3,8 +3,6 @@ module.exports.run = async (client, message, args) => {
         type: "PLAYING"
     });
     message.channel.send("Status set")
-
-
 }
 
 exports.help = {

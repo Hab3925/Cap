@@ -95,15 +95,15 @@ module.exports = (client) => {
      * @param {number} rank     Rank of user
      * @param {number} design   Design ID of user
      */
-    client.rankcard = (user, rank, design) => {
+    client.rankcard = (user, rank, guildID, design) => {
         if (design == undefined) design = user.rankCard;
         switch (design) {
             case 0:
-                return client.rankembed1(user, rank)
+                return client.rankembed1(user, rank, guildID)
             case 1:
-                return client.rankembed3(user, rank)
+                return client.rankembed3(user, rank, guildID)
             case 2:
-                return client.rankembed4(user, rank)
+                return client.rankembed4(user, rank, guildID)
         }
     }
 
@@ -234,12 +234,14 @@ module.exports = (client) => {
                     }
                 } else if (humanTime[i].toLowerCase() == "tomorrow") {
                     if (!humanTime[i + 1] || !humanTime[i + 2]) {
-                        err = "missingArgs";
+                        type = 3
                         break
-                    }
-                    if (humanTime[i + 1].toLowerCase() == "at") {
-                        type = 1
-                        break
+                    } else if (humanTime[i + 1].toLowerCase() == "at") {
+                        if (numWordsH.includes(humanTime[i + 2]) || humanTime[i + 2].match(/[1-24]/gm)) {
+                            type = 1
+                            break
+                        }
+
 
                     } else {
                         type = 3
@@ -400,8 +402,6 @@ module.exports = (client) => {
                 }
 
                 if (type == 3) {
-                    let numDays = humanTime[i + 1]
-
                     if (!result[0]) {
                         let utc = await client.awaitReply(msg, "You havent saved your timezone yet, head over to https://thecaptain.ga/timezone to set ur timezone! \n\n Or do you want to run your commands relative to UTC/GMT? (y=yes, n=no)", 60000, false)
 

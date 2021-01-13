@@ -18,7 +18,7 @@ module.exports = (client) => {
         return embed;
     }
 
-    client.rankembed1 = (user, rank) => {
+    client.rankembed1 = (user, rank, guildID) => {
         let xpBar = [];
         const gearfull = client.emojis.cache.find(emoji => emoji.name == 'gearfull');
         const gearempty = client.emojis.cache.find(emoji => emoji.name == 'gearempty');
@@ -29,13 +29,13 @@ module.exports = (client) => {
         embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
-            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
             .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
             .setTimestamp()
         return embed;
     }
 
-    client.rankembed2 = (user, rank) => {
+    client.rankembed2 = (user, rank, guildID) => {
         let xpBar = [];
         const arrow = client.emojis.cache.find(emoji => emoji.name === 'lava2');
 
@@ -46,28 +46,31 @@ module.exports = (client) => {
             .setTimestamp()
             .setFooter(user.Nickname, user.profilePic)
             .setColor(user.colour)
-            .addField(`${user.xp}xp / ${user.requieredXp}xp #${rank}`, `${xpBar.join('')} Lvl ${user.level + 1}\n[Leaderboard](https://thecaptain.ga/leaderboard) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .addField(`${user.xp}xp / ${user.requieredXp}xp #${rank}`, `${xpBar.join('')} Lvl ${user.level + 1}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
         return embed;
     }
 
-    client.rankembed3 = (user, rank) => {
+    client.rankembed3 = (user, rank, guildID) => {
         let xpBar = [];
         let i = 0
-        times(Math.floor(user.percentageToNextLvl / 9))(() => { xpBar.push(client.emojis.cache.find(emoji => emoji.name == `lava${i}`)); i++ });
+        times(Math.floor(user.percentageToNextLvl / 9))(() => {
+            xpBar.push(client.emojis.cache.find(emoji => emoji.name == `lava${i}`));
+            i++
+        });
         times(Math.ceil((100 - user.percentageToNextLvl) / 9))(() => xpBar.push(client.emojis.cache.find(emoji => emoji.name == `obsidian`)));
 
 
         embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
-            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
             .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
             .setTimestamp()
 
         return embed;
     }
 
-    client.rankembed4 = (user, rank) => {
+    client.rankembed4 = (user, rank, guildID) => {
         let xpBar = [];
 
         let progress = Math.floor(user.percentageToNextLvl / 100);
@@ -83,7 +86,7 @@ module.exports = (client) => {
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
             .setFooter(`Level ${user.level}`)
-            .setDescription(`${user.xp}xp / ${user.requieredXp}xp\n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`${user.xp}xp / ${user.requieredXp}xp\n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
             .setTimestamp()
 
         return embed

@@ -1,5 +1,5 @@
 module.exports.run = async (client, message, args) => {
-    message.channel.send('You can access a gloabal leaderboard at https://thecaptain.ga/leaderboard !')
+    message.channel.send(`You can find the leaderboard at <https://thecaptain.ga/leaderboard?id=${message.guild.id}> !`)
 }
 
 exports.help = {
