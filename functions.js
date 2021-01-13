@@ -204,7 +204,6 @@ module.exports = (client) => {
                     if (numWordsD.includes(humanTime[i + 1]) || humanTime[i + 1].match(/[1-7]/gm)) {
                         if (humanTime[i + 2].toLowerCase() == "days") {
                             if (!humanTime[i + 3]) {
-                                console.log("test")
                                 type = 2
                                 break
                             } else if (humanTime[i + 3].toLowerCase() == "at") {
@@ -251,14 +250,10 @@ module.exports = (client) => {
                         err = "missingArgs";
                         break
                     }
-
                     if (humanTime[i + 1].toLowerCase() !== "week") {
                         err = "incorrectArgs"
                         break
-                    } else {
-
                     }
-
                 }
             };
 
@@ -271,7 +266,7 @@ module.exports = (client) => {
 
                     if (!time.match(/[0-2][0-3]:[0-5][0-9]/)) {
                         msg.channel.send(`I dont understand when you want your ${event} to happen!`);
-                        resolve()
+                        reject("timezone")
                     }
 
                     if (!result[0]) {
@@ -279,7 +274,7 @@ module.exports = (client) => {
 
                         if (utc.toLowerCase() !== "y") {
                             msg.channel.send("Save your timezone at https://thecaptain.ga/timezone, and run the command again!")
-                            resolve()
+                            reject("timezone")
                         } else {
                             let timeArr = time.split(":")
                             let hr = timeArr[0]
@@ -333,44 +328,73 @@ module.exports = (client) => {
                 }
 
                 if (type == 2) {
-                    let numHrs = humanTime[i + 1]
-
+                    let num = humanTime[i + 1]
                     if (!result[0]) {
                         let utc = await client.awaitReply(msg, "You havent saved your timezone yet, head over to https://thecaptain.ga/timezone to set ur timezone! \n\n Or do you want to run your commands relative to UTC/GMT? (y=yes, n=no)", 60000, false)
 
                         if (utc.toLowerCase() !== "y") {
                             msg.channel.send("Save your timezone at https://thecaptain.ga/timezone, and run the command again!")
-                            resolve()
+                            reject("timezone")
                         } else {
-                            if (!numHrs.match(/^[0-9]+$/)) {
-                                let hours;
-                                let i = 1;
-                                numWordsH.forEach(w => {
-                                    i++
-                                    if (numHrs.toLowerCase() == w) hours = i;
-                                })
-                                let output = new Date().getTime() + hours * hour
-                                resolve(output)
+                            if (!num.match(/^[0-9]+$/)) {
+                                if (humanTime[i + 2] == "days") {
+                                    let days;
+                                    let i = 1;
+                                    numWordsD.forEach(w => {
+                                        i++
+                                        if (num.toLowerCase() == w) days = i - 1;
+                                    })
+                                    let output = new Date().getTime() + days * day
+                                    resolve(output)
+                                } else if (humanTime[i + 2].match(/hours|hour|hr|hrs/gmi)) {
+                                    let hours;
+                                    let i = 1;
+                                    numWordsH.forEach(w => {
+                                        i++
+                                        if (num.toLowerCase() == w) hours = i - 1;
+                                    })
+                                    let output = new Date().getTime() + hours * hour
+                                    resolve(output)
+                                }
+
                             } else {
-                                let output = new Date().getTime() + parseInt(numHrs) * hour;
+
+                                let output = new Date().getTime() + parseInt(num) * hour;
                                 resolve(output)
                             }
                         }
                     } else {
-                        if (!numHrs.match(/^[0-9]+$/)) {
-                            let hours;
-                            let i = 1;
-                            numWordsH.forEach(w => {
-                                i++
-                                if (numHrs.toLowerCase() == w) hours = i;
-                            })
+                        if (!num.match(/^[0-9]+$/)) {
                             let timezone = result[0].timezone
-                            let output = new Date().getTime() + timezone * hour + hours * hour
-                            resolve(output)
+                            if (humanTime[i + 2] == "days") {
+                                let days;
+                                let i = 1;
+                                numWordsD.forEach(w => {
+                                    i++
+                                    if (num.toLowerCase() == w) days = i - 1;
+                                })
+                                let output = new Date().getTime() + days * day + timezone * hour
+                                resolve(output)
+                            } else if (humanTime[i + 2].match(/hours|hour|hr|hrs/gmi)) {
+                                let hours;
+                                let i = 1;
+                                numWordsH.forEach(w => {
+                                    i++
+                                    if (num.toLowerCase() == w) hours = i - 1;
+                                })
+                                let output = new Date().getTime() + hours * hour + timezone * hour
+                                resolve(output)
+                            }
                         } else {
-                            let timezone = result[0].timezone
-                            let output = new Date().getTime() + timezone * hour + parseInt(numHrs) * hour;
-                            resolve(output)
+                            if (humanTime[i + 2] == "days") {
+                                let timezone = result[0].timezone
+                                let output = new Date().getTime() + timezone * hour + parseInt(num) * hour;
+                                resolve(output)
+                            } else if (humanTime[i + 2].match(/hours|hour|hr|hrs/gmi)) {
+                                let timezone = result[0].timezone
+                                let output = new Date().getTime() + timezone * hour + parseInt(num) * hour;
+                                resolve(output)
+                            }
                         }
                     }
                 }

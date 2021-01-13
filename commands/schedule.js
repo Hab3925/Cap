@@ -27,12 +27,11 @@ module.exports.run = async (client, message, args, prefix, con) => {
     } catch (e) {
         switch (e) {
             case "incorrectArgs":
-
-                message.channel.send("Some of your arguments are wrong! They simply dont make any sense!")
-                break;
+                return message.channel.send("I didnt quite understand you there, might want to check up on that spelling of yours!")
             case "missingArgs":
-                message.channel.send("You didn't include all the needed arguments! I dont understand when you want your event to happen!")
-                break;
+                return message.channel.send("You didn't include all the needed arguments! I dont understand when you want your event to happen!")
+            case "timezone":
+                return
         }
     }
 
