@@ -91,8 +91,6 @@ module.exports.run = async (client, message, args, prefix, con) => {
                 .addField("Attendees:", `\n> ${attendees.join("\n> ")}`)
                 .setFooter(`Started on ${displayTime} by ${message.member.displayName}`)
             msg.edit(embed)
-        }, {
-            time: 60000
         })
     }, 1000);
 

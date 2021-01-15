@@ -204,8 +204,6 @@ client.on("message", async message => {
 	} catch (e) {
 		console.log(message.author + "\n\nCaused:" + e)
 	}
-	//if (~config.volcdev.indexOf(message.author.id)) permlvl = 3;
-	//if (~config.codev.indexOf(message.author.id)) permlvl = 5;
 	if (message.author.id == "188762891137056769") permlvl = 6;
 
 	//Automod
