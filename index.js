@@ -276,10 +276,10 @@ client.on("message", async message => {
 	// Autoreply (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
 	if ((isTesting || message.guild.id == volcanoidsServerId) && message.channel.id !== discussOtherGamesChannelId) {
 		if (consoleAutoreplyRegex.exec(message.content)) {
-			CreateAutoReply(message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.content, message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
 		}
 		if (steamAutoreplyRegex.exec(message.content)) {
-			CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.content, message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
 		}
 	}
 

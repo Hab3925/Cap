@@ -1,8 +1,10 @@
 let cooldown = new Set();
 module.exports.run = async (client, message) => {
-    if(cooldown.has(message.author.id))return message.channel.send('No need to spam bro...').then(msg => {msg.delete(3000); message.delete()})
-    const rolling = client.emojis.cache.get('638676053015003156')
-    message.channel.send('Rolling... ' /* + rolling */).then(msg => {
+    if (cooldown.has(message.author.id)) return message.channel.send('No need to spam bro...').then(msg => {
+        msg.delete(3000);
+        message.delete()
+    })
+    message.channel.send('Rolling... ' /* + rolling */ ).then(msg => {
         let rnd = Math.floor(Math.random() * 6) + 1;
         let emojiname = rnd + 'd'
         const dice = client.emojis.cache.find(emoji => emoji.name === `${emojiname}`)
