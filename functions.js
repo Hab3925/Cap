@@ -549,12 +549,10 @@ module.exports = (client) => {
      * @param response                     The text to use as the base for the message.
      * @param includeCheckFaqMsgInResponse (Optional) Whether to append the canned message about checking the FAQ to the end of the response message.
      */
-    client.CreateAutoReply = async (msgContent, channel, response, includeCheckFaqMsgInResponse = true) => {
+    client.CreateAutoReply = async (channel, response, includeCheckFaqMsgInResponse = true) => {
         if (includeCheckFaqMsgInResponse === true) {
             response += `\n\nIf you have any other questions, make sure to read the <#${faqChannelId}>, your question might be already answered there.`;
         }
-
-        let feedbackHook = require("./feedback")
 
         channel.send(`${response}\n\nThis autoreply is a work in progress feature, did this help you? (react with ${thumbsUp}) Or was it misplaced? (react with ${thumbsDown}) Thanks for the input!`)
             .then(async (m) => {
@@ -570,10 +568,7 @@ module.exports = (client) => {
                             await UpdateAutoReplyStats(currentGood, currentBad);
                             client.autoreply.set("good", currentGood);
 
-                            feedbackHook.senddata({
-                                message: msgContent,
-                                feedback: true
-                            })
+
 
                             m.edit(response);
 
@@ -583,11 +578,6 @@ module.exports = (client) => {
                             currentBad++;
                             await UpdateAutoReplyStats(currentGood, currentBad);
                             client.autoreply.set("bad", currentBad);
-
-                            feedbackHook.senddata({
-                                message: msgContent,
-                                feedback: false
-                            })
 
                             m.edit(response);
                             m.delete({

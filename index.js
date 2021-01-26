@@ -1,5 +1,5 @@
 // Quick switch between testing mode & regular mode.
-const isTesting = true;
+const isTesting = false;
 const token = isTesting ? "cog" : "cap";
 
 // Discord IDs.
@@ -139,29 +139,29 @@ require("./functions")(client);
 require("./embeds.js")(client);
 
 let consoleAutoreplyRegex = client.CreateAutoReplyRegex([
-	`console.*(will|game|to|available)`,
-	`(will|game|to|available).*console`,
-	`xbox.*(will|game|to|available)`,
-	`(will|game|to|available).*xbox`,
-	`(ps4|ps5).*(will|game|to|available)`,
-	`(will|game|to|available).*(ps4|ps5|playstation)`
-],
+		`console.*(will|game|to|available)`,
+		`(will|game|to|available).*console`,
+		`xbox.*(will|game|to|available)`,
+		`(will|game|to|available).*xbox`,
+		`(ps4|ps5).*(will|game|to|available)`,
+		`(will|game|to|available).*(ps4|ps5|playstation)`
+	],
 	`igm`);
 
 // A var since I keep copying the "the game", "it", "this", etc in many of these.
 const theGameRegex = `( (that|the|this))?( (game|it|volcanoid(s?)))?`;
 let steamAutoreplyRegex = client.CreateAutoReplyRegex([
-	`when(('|’)s|s| is)?${theGameRegex} (come|coming) out`,
-	`is${theGameRegex} (out|released|available)( yet)?`,
-	`(where|how) (can|do).*?(get|buy|play).*?${theGameRegex}`,
-	`(where|how).*?download`,
-	`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
-	`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
-	`how much.*?${theGameRegex} cost`,
-	`how (much|many)( [^ \\n]+?)? is${theGameRegex}`,
-	`can i play( [^ \\n]+?)?${theGameRegex} now`,
-	`price in (usd|dollars|aud|cad)`
-],
+		`when(('|’)s|s| is)?${theGameRegex} (come|coming) out`,
+		`is${theGameRegex} (out|released|available)( yet)?`,
+		`(where|how) (can|do).*?(get|buy|play).*?${theGameRegex}`,
+		`(where|how).*?download`,
+		`(is|if|will)( [^ \\n]+?)?${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
+		`what.*?(get|buy|is).*?${theGameRegex}( [^ \\n]+?)? on`,
+		`how much.*?${theGameRegex} cost`,
+		`how (much|many)( [^ \\n]+?)? is${theGameRegex}`,
+		`can i play( [^ \\n]+?)?${theGameRegex} now`,
+		`price in (usd|dollars|aud|cad)`
+	],
 	`igm`);
 
 client.on("message", async message => {
@@ -276,10 +276,10 @@ client.on("message", async message => {
 	// Autoreply (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
 	if ((isTesting || message.guild.id == volcanoidsServerId) && message.channel.id !== discussOtherGamesChannelId) {
 		if (consoleAutoreplyRegex.exec(message.content)) {
-			CreateAutoReply(message.content, message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */ );
 		}
 		if (steamAutoreplyRegex.exec(message.content)) {
-			CreateAutoReply(message.content, message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
+			CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */ );
 		}
 	}
 
@@ -306,7 +306,7 @@ client.on("message", async message => {
 
 					if (profilePic == null)
 						profilePic =
-							"https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
+						"https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
 					if (user === undefined || user === null)
 						return con.query(
 							`INSERT INTO ${table} (ID, UserID, Nickname, xp, level, profilePic, percentageToNextLvl, requieredXp, totalxp, colour, rankCard, boosts, guildID) VALUES (NULL, "${message.author.id}", "${nickname}", "${gainedXp}", 0, "${profilePic}", ${gainedXp}, "100", "${gainedXp}", "#C54816", 0, 0, ${message.guild.id})`
@@ -360,9 +360,9 @@ client.on("message", async message => {
 							`UPDATE ${table} SET Nickname = '${nickname}' WHERE UserID = ${message.author.id} AND guildID='${message.guild.id}'`
 						);
 					if (user.profilePic !== message.author.avatarURL({
-						format: 'png',
-						size: 2048
-					}))
+							format: 'png',
+							size: 2048
+						}))
 						con.query(
 							`UPDATE ${table} SET profilePic = '${profilePic}' WHERE UserID = ${message.author.id}`
 						);
@@ -432,12 +432,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -446,12 +446,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);
