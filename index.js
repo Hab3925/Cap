@@ -12,7 +12,6 @@ const {
 	inspect
 } = require("util");
 const readdir = promisify(require("fs").readdir);
-const readline = require("readline");
 let table;
 let GSTable;
 

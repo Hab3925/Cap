@@ -94,7 +94,6 @@ const CreateAutoReplyRegex = (individualLinesToMatch, flags = "", ignoreQuotedTe
 /**
  * Creates a reply on the given channel with the response text.
  * Also handles waiting for feedback.
- *
  * @param channel                      The channel to send the message to.
  * @param response                     The text to use as the base for the message.
  * @param includeCheckFaqMsgInResponse (Optional) Whether to append the canned message about checking the FAQ to the end of the response message.
@@ -110,22 +109,13 @@ const CreateAutoReply = async (channel, response, includeCheckFaqMsgInResponse =
             await m.react(thumbsDown);
             setTimeout(() => {
                 m.createReactionCollector(async (r) => {
-                    let currentGood = parseInt(client.autoreply.get("good"));
-                    let currentBad = parseInt(client.autoreply.get("bad"));
-
                     if (r.emoji.id == thumbsUp.id) {
-                        currentGood++;
-                        await UpdateAutoReplyStats(currentGood, currentBad);
-                        client.autoreply.set("good", currentGood);
 
                         m.edit(response);
 
                         ShowThanksForFeedback(r);
                         return;
                     } else if (r.emoji.id == thumbsDown.id) {
-                        currentBad++;
-                        await UpdateAutoReplyStats(currentGood, currentBad);
-                        client.autoreply.set("bad", currentBad);
 
                         m.edit(response);
                         m.delete({
@@ -145,17 +135,7 @@ const CreateAutoReply = async (channel, response, includeCheckFaqMsgInResponse =
             }, 200);
         });
 
-    // Shows the new status ratio.
-    const UpdateAutoReplyStats = async (currentGood, currentBad) => {
-        const newStatusMessage = `Good response: ${currentGood} | Bad response: ${currentBad} | Ratio: ${Math.floor(currentGood / (currentGood + currentBad) * 100)}%`;
 
-        if (isTesting) { // CogBot cannot edit Cap's stats post.
-            console.log(newStatusMessage);
-        } else {
-            let statsMsg = await client.guilds.cache.get(captainsSubmarineServerId).channels.cache.get(autoReplyFeedbackChannelId).messages.fetch(autoReplyFeedbackMessageId);
-            statsMsg.edit(newStatusMessage);
-        }
-    }
 
     // Local func so we don't have to repeat it for each potential emoji reply.
     const ShowThanksForFeedback = async (r) => {
