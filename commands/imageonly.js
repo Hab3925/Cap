@@ -1,6 +1,9 @@
 module.exports.run = async (client, message, args) => {
     message.delete()
     let array = [];
+    if (!client.ImageOnly.has('channels')) {
+        client.ImageOnly.set('channels', [])
+    }
     client.ImageOnly.get('channels').forEach(c => { if (c == message.channel.id) return; array.push(c) });
 
     array.push(message.channel.id)

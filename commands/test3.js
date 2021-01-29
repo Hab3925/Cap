@@ -1,5 +1,5 @@
 module.exports.run = async (client, message, args, prefix, con) => {
-    message.channel.send(client.makekey(10))
+    message.channel.send(client.makekey(5))
 
     //client.achievements()
 }
