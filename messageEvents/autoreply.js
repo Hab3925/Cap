@@ -1,14 +1,9 @@
 // Server
 const volcanoidsServerId = "444244464903651348";
-const captainsSubmarineServerId = "488708757304639520";
 
 // Channel
 const discussOtherGamesChannelId = "496325967883534337";
-const autoReplyFeedbackChannelId = "754675846132006972";
 const faqChannelId = "454972890299891723";
-
-// Message
-const autoReplyFeedbackMessageId = "754702829976944673";
 
 module.exports.run = async (client, message, isTesting) => {
     // Emoji
