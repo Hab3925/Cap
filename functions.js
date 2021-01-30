@@ -1,4 +1,4 @@
-module.exports = (client) => {
+module.exports = (client, useDatabase) => {
     const Discord = require('discord.js');
     const times = x => f => {
         if (x > 0) {
@@ -82,11 +82,13 @@ module.exports = (client) => {
             return "Now";
     }
 
-    client.connect = (con) => {
-        con.connect(function (err) {
-            if (err) throw err
-            console.log(`Connected to sql database`);
-        });
+    if (useDatabase) {
+        client.connect = (con) => {
+            con.connect(function (err) {
+                if (err) throw err
+                console.log(`Connected to sql database`);
+            });
+        }
     }
 
     /**
