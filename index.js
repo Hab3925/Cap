@@ -2,6 +2,9 @@
 const isTesting = true;
 const token = isTesting ? "cog" : "cap";
 
+// Uncomment to test regex only.
+//require("./messageEvents/autoreply.js"); throw new Error(); // Error to abort after printing/testing regex.
+
 //constants
 const Discord = require("discord.js");
 const client = new Discord.Client();
