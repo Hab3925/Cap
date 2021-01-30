@@ -4,6 +4,9 @@ const volcanoidsServerId = "444244464903651348";
 // Channel
 const discussOtherGamesChannelId = "496325967883534337";
 const faqChannelId = "454972890299891723";
+const crewmatesNeededId = "712705119497486426";
+const discussionsId = "445199967540346881";
+const askTheCommunityId = "494576341849735188";
 
 // Emoji
 const thumbsUpId_cogHand = "713469848193073303"; // :cogLike:
@@ -30,35 +33,55 @@ const theGamePart2 = `(game|it|volcanoid(s?))`; // The 'game' part of 'the game'
 // Merge so we either match: The first part, the second part, or both parts.
 // e.g. we match: 'the', 'the game', or 'game'.
 // Breakdown:               'the'     |     'game'    |            'the game'
-const theGameRegex = `(${theGamePart1}|${theGamePart2}|${theGamePart1}\\s${theGamePart2})`;
+const theGameRegex = `(${theGamePart1}|${theGamePart2}|${theGamePart1} ${theGamePart2})`;
 
 const steamAutoreplyRegex = CreateAutoReplyRegex([
-    `when(('|’)s|s| is)?(\\s${theGameRegex})? (come|coming) out`,
-    `is(\\s${theGameRegex}) (out|released|available)( yet)?`,
-    `(where|how) (can|do).*?(get|buy|play)\\s.*?${theGameRegex}`,
+    `when(('|’)s|s| is)?( ${theGameRegex})? (come|coming) out`,
+    `is( ${theGameRegex}) (out|released|available)( yet)?`,
+    `(where|how) (can|do).*?(get|buy|play) .*?${theGameRegex}`,
     `(where|how).*?download`,
-    `(is|if|will)( [^ \\n]+?)?\\s${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
-    `what.*?(get|buy|is)\\s.*?${theGameRegex}?( [^ \\n]+?)? on(\\s|\\?|\\.)`,
-    `how much\\s.*?${theGameRegex}? cost`,
-    `how (much|many)( [^ \\n]+?)? is\\s${theGameRegex}`,
-    `can i play( [^ \\n]+?)?(\\s${theGameRegex})? now`,
+    `(is|if|will)( [^ \\n]+?)? ${theGameRegex}( (?!only)[^ \\n]+?)? (free|on steam)`,
+    `what.*?(get|buy|is) .*?${theGameRegex}?( [^ \\n]+?)? on( |\\?|\\.)`,
+    `how much .*?${theGameRegex}? cost`,
+    `how (much|many)( [^ \\n]+?)? is ${theGameRegex}`,
+    `can i play( [^ \\n]+?)?( ${theGameRegex})? now`,
     `price in (usd|dollars|aud|cad)`
+], `igm`);
+
+const multiplayerNames = `(coop|co-op|multiplayer|multi player|multi-player)`;
+
+const multiplayerAutoreplyRegex = CreateAutoReplyRegex([
+    `is ${theGameRegex} ${multiplayerNames}`,
+    `is there ${multiplayerNames}`,
+    `does ${theGameRegex}.*${multiplayerNames}`,
+    `${theGameRegex} .* (is )?${multiplayerNames}\\?`,
+    `is ${multiplayerNames} a thing`,
+    `${theGameRegex} is ${multiplayerNames}.*?\\?`,
+    `you should[^\\.\\n]*(add|make)[^\\.\\n]*${multiplayerNames}` // `[^\\.\\n]*` matches everything except period & newline.
 ], `igm`);
 
 module.exports.run = async (client, message, isTesting) => {
     const thumbsUpId = isTesting ? thumbsUpId_testing : thumbsUpId_cogHand;
     const thumbsDownId = isTesting ? thumbsDownId_testing : thumbsDownId_cogHand;
 
-    const thumbsUp = client.emojis.cache.get(thumbsUpId);
-    const thumbsDown = client.emojis.cache.get(thumbsDownId);
+    // Don't include `let` or `const` so it's set in global scope as it's used in `CreateAutoReply`.
+    thumbsUp = client.emojis.cache.get(thumbsUpId);
+    thumbsDown = client.emojis.cache.get(thumbsDownId);
 
-    // Autoreply (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
-    if ((isTesting || message.guild.id == volcanoidsServerId) && message.channel.id !== discussOtherGamesChannelId) {
+    // Autoreply for "console" & "steam". (If running as cogbot or on the Volcanoids server. Ignoring discuss-other-games.)
+    if (isTesting || (message.guild.id == volcanoidsServerId && message.channel.id !== discussOtherGamesChannelId)) {
         if (consoleAutoreplyRegex.exec(message.content)) {
             CreateAutoReply(message.channel, `**Volcanoids**? On **consoles**? Yes sir! But so far the main priority is adding more content before they dive into all the console shenanigans. That Rich guy will keep you updated!`, true /* Include check FAQ text. */);
         }
         if (steamAutoreplyRegex.exec(message.content)) {
             CreateAutoReply(message.channel, `You can get Volcanoids on Steam here: https://store.steampowered.com/app/951440/Volcanoids/`, true /* Include check FAQ text. */);
+        }
+    }
+
+    // Autoreply for "is it multiplayer". (If running as cogbot or on the Volcanoids server. Only run in #discussion & #ask-the-community.)
+    if (isTesting || (message.guild.id == volcanoidsServerId && (message.channel.id == discussionsId || message.channel.id == askTheCommunityId))) {
+        if (multiplayerAutoreplyRegex.exec(message.content)) {
+            CreateAutoReply(message.channel, `Yes! Volcanoids is multiplayer. See the <#${faqChannelId}> for details.`, true /* Include check FAQ text. */);
         }
     }
 }
