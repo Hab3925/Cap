@@ -1,9 +1,16 @@
 // Quick switch between testing mode & regular mode.
 const isTesting = true;
+const useDatabase = true;
 const token = isTesting ? "cog" : "cap";
+const loginToken = process.env[token];
+
+if (!loginToken) {
+	console.log(`Error: No login token set. Please set '${token}' to a valid token.`);
+	return;
+}
 
 // Uncomment to test regex only.
-//require("./messageEvents/autoreply.js"); throw new Error(); // Error to abort after printing/testing regex.
+//require("./messageEvents/autoreply.js"); return; // Error to abort after printing/testing regex.
 
 //constants
 const Discord = require("discord.js");
@@ -55,7 +62,7 @@ client.autoreply = new Enmap({
 })
 
 client.on("ready", async () => {
-	await client.connect(con);
+	if (useDatabase) await client.connect(con);
 
 	if (token == "cog") {
 		table = "TESTXP";
@@ -73,18 +80,22 @@ client.on("ready", async () => {
 		i++;
 	});
 	console.log(`Loaded ${i} commands`);
-	con.query(`SELECT guildID, prefix, lockedChannels FROM ${GSTable};`, function (
-		err,
-		result
-	) {
-		if (!result) return;
-		result.forEach(server => {
-			client.prefixes.set(server.guildID, server.prefix);
-			client.disabledCmds.set(server.guildID, server.lockedChannels);
+
+	if (useDatabase) {
+		con.query(`SELECT guildID, prefix, lockedChannels FROM ${GSTable};`, function (
+			err,
+			result
+		) {
+			if (!result) return;
+			result.forEach(server => {
+				client.prefixes.set(server.guildID, server.prefix);
+				client.disabledCmds.set(server.guildID, server.lockedChannels);
+			});
 		});
-	});
-	console.log("Loaded prefixes");
-	console.log("Loaded locked channels");
+		console.log("Loaded prefixes");
+		console.log("Loaded locked channels");
+	}
+
 	console.log(
 		`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`
 	);
@@ -100,16 +111,16 @@ client.on("guildCreate", guild => {
 	let name = guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	console.log(`| New Guild | ${guild.name} - ${guild.memberCount}`);
 	var query = `INSERT INTO ${GSTable} (guildID, roles, prefix, guildName, guildIcon, lockedChannels, members) VALUE ('${guild.id}', '[]','.','${name}','${guild.iconURL({ format: 'png', size: 2048 })}', '[]','${guild.memberCount}');`;
-	con.query(query);
+	if (useDatabase) con.query(query);
 });
 
 client.on("guildDelete", guild => {
 	console.log(`| Kicked | ${guild.name}`);
 	var query = `DELETE FROM ${GSTable} WHERE guildID='${guild.id}'`;
-	con.query(query);
+	if (useDatabase) con.query(query);
 });
 
-require("./functions")(client);
+require("./functions")(client, useDatabase);
 require("./embeds.js")(client);
 
 client.on("message", async message => {
@@ -119,7 +130,7 @@ client.on("message", async message => {
 	if (!client.prefixes.has(message.guild.id)) {
 		let name = message.guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 		var query = `INSERT INTO ${GSTable} (guildID, roles, prefix, guildName, guildIcon, lockedChannels, members) VALUE ('${message.guild.id}', '[]','.','${name}','${message.guild.iconURL({ format: 'png', size: 2048 })}', '[]', '${message.guild.memberCount}');`;
-		con.query(query);
+		if (useDatabase) con.query(query);
 		client.prefixes.set(message.guild.id, ".");
 		console.log(`| New Guild | ${message.guild.name} - ${message.guild.memberCount}`)
 		return;
@@ -151,11 +162,11 @@ client.on("message", async message => {
 	let evtFiles = await readdir("./messageEvents")
 	evtFiles.forEach(file => {
 		const event = require(`./messageEvents/${file}`)
-		event.run(client, message, isTesting, command, prefix, permlvl, con, table, GSTable)
+		event.run(client, message, isTesting, command, prefix, permlvl, con, table, GSTable, useDatabase)
 	})
 
 	// Updating the members in the database
-	con.query(`UPDATE ${GSTable} SET members = ${message.guild.memberCount} WHERE guildID = ${message.guild.id}`)
+	if (useDatabase) con.query(`UPDATE ${GSTable} SET members = ${message.guild.memberCount} WHERE guildID = ${message.guild.id}`)
 
 
 	// Command handler 
@@ -181,7 +192,7 @@ client.on("message", async message => {
 client.on("guildMemberUpdate", (oldMember, newMember) => {
 	if (oldMember.displayName !== newMember.displayName) {
 		let nickname = newMember.displayName.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
-		con.query(
+		if (useDatabase) con.query(
 			`UPDATE ${table} SET Nickname = '${nickname}' WHERE UserID = '${newMember.user.id}' AND guildID = '${newMember.guild.id}'`
 		);
 	}
@@ -195,7 +206,7 @@ client.on("userUpdate", (oldUser, newUser) => {
 		format: 'png',
 		size: 2048
 	}))
-		con.query(
+		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
 });
@@ -209,14 +220,14 @@ client.on("guildUpdate", (oldGuild, newGuild) => {
 		format: 'png',
 		size: 2048
 	}))
-		con.query(
+		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);
 	if (oldGuild.name !== newGuild.name)
-		con.query(
+		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildName = '${newGuild.name}' WHERE guildID = '${newGuild.id}'`
 		);
 });
 
 client.on("error", console.error);
-client.login(process.env[token]);
+client.login(loginToken);

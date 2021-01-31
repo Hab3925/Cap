@@ -1,6 +1,8 @@
 let cooldown = new Set();
 
-module.exports.run = async (client, message, isTesting, command, prefix, permlvl, con, table, GSTable) => {
+module.exports.run = async (client, message, isTesting, command, prefix, permlvl, con, table, GSTable, useDatabase) => {
+    if (!useDatabase) return;
+
     //xp
     let msg = message.content.toUpperCase();
 
