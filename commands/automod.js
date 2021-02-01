@@ -31,7 +31,7 @@ module.exports.run = async (client, message, args) => {
         return message.channel.send(`Successfully deleted "${args[1]}" from the banned words list.`)
     }
     if (client.automod.has(message.guild.id)) {
-        if (client.automod.get(message.guild.id).includes(args[1].toLowerCase())) return message.channel.send(`I am already automoderating that word here!`)
+        if (client.automod.get(message.guild.id).includes(args[0].toLowerCase())) return message.channel.send(`I am already automoderating that word here!`)
         let array = client.automod.get(message.guild.id)
         array.push(args[0].toLowerCase())
         client.automod.set(message.guild.id, array)

@@ -3,7 +3,12 @@ module.exports.run = async (client, message, isTesting, cmd) => {
     if (cmd !== "automod" && cmd !== "am") {
         if (client.automod.has(message.guild.id)) {
             client.automod.get(message.guild.id).forEach(m => {
-                if (message.content.toLowerCase().match(m)) {
+                const spacerList = `+(\\s|\\.)*`
+                let charArray = m.split('');
+                let wordWithRegex = '\\s*' + charArray.join(spacerList) + '+(\\s+|$)';
+                let regexObj = RegExp(wordWithRegex, 'gmiu');
+
+                if (message.content.toLowerCase().match(regexObj)) {
                     message.delete()
                     message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);
                     if (!client.logchn.has(message.guild.id)) return
