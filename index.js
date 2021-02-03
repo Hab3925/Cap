@@ -92,18 +92,16 @@ client.on("ready", async () => {
 				client.disabledCmds.set(server.guildID, server.lockedChannels);
 			});
 		});
-		console.log("Loaded prefixes");
-		console.log("Loaded locked channels");
-	}
+		console.log("Loaded guildsettings");
 
-	console.log(
-		`Bot has started, with ${client.users.cache.size} users, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} guilds.`
-	);
+	}
+	//client.achievements()
+	//console.log("Loaded achivements")
+
+	console.log(`Bot has started`);
 	client.user.setActivity("Volcanoids", {
 		type: "PLAYING"
 	});
-	//client.achievements()
-
 
 });
 
@@ -120,13 +118,17 @@ client.on("guildDelete", guild => {
 	if (useDatabase) con.query(query);
 });
 
-require("./functions")(client, useDatabase);
-require("./embeds.js")(client);
+require("./utility/functions.js")(client, useDatabase);
+require("./utility/embeds.js")(client);
+require("./utility/time.js")(client);
 
 client.on("message", async message => {
 	if (!message.guild) return;
 
 	if (message.author.bot) return;
+
+	// Updating the members in the database
+	if (useDatabase) con.query(`UPDATE ${GSTable} SET members = ${message.guild.memberCount} WHERE guildID = ${message.guild.id}`)
 	if (!client.prefixes.has(message.guild.id)) {
 		let name = message.guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 		var query = `INSERT INTO ${GSTable} (guildID, roles, prefix, guildName, guildIcon, lockedChannels, members) VALUE ('${message.guild.id}', '[]','.','${name}','${message.guild.iconURL({ format: 'png', size: 2048 })}', '[]', '${message.guild.memberCount}');`;
@@ -154,7 +156,7 @@ client.on("message", async message => {
 		if (message.member.permissions.has("MANAGE_MESSAGES", true)) permlvl = 1;
 		if (message.member.permissions.has("ADMINISTRATOR", true)) permlvl = 2;
 	} catch (e) {
-		console.log(message.author + "\n\nCaused:" + e)
+		console.log(message.author + "\n\nCaused:\n\n" + e)
 	}
 	if (message.author.id == "188762891137056769") permlvl = 6;
 
@@ -164,10 +166,6 @@ client.on("message", async message => {
 		const event = require(`./messageEvents/${file}`)
 		event.run(client, message, isTesting, command, prefix, permlvl, con, table, GSTable, useDatabase)
 	})
-
-	// Updating the members in the database
-	if (useDatabase) con.query(`UPDATE ${GSTable} SET members = ${message.guild.memberCount} WHERE guildID = ${message.guild.id}`)
-
 
 	// Command handler 
 
@@ -200,12 +198,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -214,12 +212,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);

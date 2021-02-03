@@ -13,7 +13,7 @@ module.exports.run = async (client, message, isTesting, cmd) => {
                     message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);
                     if (!client.logchn.has(message.guild.id)) return
                     if (client.logchn.get(message.guild.id) != "disabled") {
-                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${message.content}`)
                     }
                     return
                 }

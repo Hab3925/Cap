@@ -27,7 +27,7 @@ module.exports.run = async (client, message, isTesting, command, prefix, permlvl
                         }));
                     if (!client.logchn.has(message.guild.id)) return
                     if (client.logchn.get(message.guild.id) != "disabled") {
-                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${message.content}`)
                     }
                     return;
                 }
@@ -40,7 +40,7 @@ module.exports.run = async (client, message, isTesting, command, prefix, permlvl
                         }));
                     if (!client.logchn.has(message.guild.id)) return
                     if (client.logchn.get(message.guild.id) != "disabled") {
-                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${msgContent.join(" ")}`)
+                        message.guild.channels.cache.get(client.logchn.get(message.guild.id)).send(`Deleted message in <#${message.channel.id}> by <@${message.author.id}>: \n${message.content}`)
                     }
                     return;
                 }

@@ -7,7 +7,6 @@
     "better-sqlite3": "^7.1.2",
     "discord.js": "12.5.1",
     "enmap": "^5.8.2",
-    "express": "^4.17.1",
     "fs": "0.0.1-security",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7",
