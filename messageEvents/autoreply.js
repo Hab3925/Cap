@@ -61,6 +61,7 @@ const multiplayerAutoreplyRegex = CreateAutoReplyRegex([
 ], `igm`);
 
 module.exports.run = async (client, message, isTesting) => {
+    if(message.author.id === client.user.id){return}
     const thumbsUpId = isTesting ? thumbsUpId_testing : thumbsUpId_cogHand;
     const thumbsDownId = isTesting ? thumbsDownId_testing : thumbsDownId_cogHand;
 
