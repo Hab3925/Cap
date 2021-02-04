@@ -124,6 +124,7 @@ require("./utility/time.js")(client);
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
 
+	if (oldMessage.author.bot || newMessage.author.bot) return;
 	let prefix = client.prefixes.get(newMessage.guild.id);
 	let args = newMessage.content
 		.slice(prefix.length)
