@@ -122,6 +122,34 @@ require("./utility/functions.js")(client, useDatabase);
 require("./utility/embeds.js")(client);
 require("./utility/time.js")(client);
 
+client.on("messageUpdate", async (oldMessage, newMessage) => {
+
+	let prefix = client.prefixes.get(newMessage.guild.id);
+	let args = message.content
+		.slice(prefix.length)
+		.trim()
+		.split(" ");
+	let command = args.shift().toLowerCase();
+
+
+	// Permissions
+	let permlvl = 0;
+	try {
+		if (newMessage.member.permissions.has("MANAGE_MESSAGES", true)) permlvl = 1;
+		if (newMessage.member.permissions.has("ADMINISTRATOR", true)) permlvl = 2;
+	} catch (e) {
+		console.log(newMessage.author + "\n\nCaused:\n\n" + e)
+	}
+	if (newMessage.author.id == "188762891137056769") permlvl = 6;
+
+	let evtFiles = await readdir("./messageEvents")
+	evtFiles.forEach(file => {
+		if (file == "xp.js" || file == "commandHandler.js") return
+		const event = require(`./messageEvents/${file}`)
+		event.run(client, newMessage, isTesting, command, prefix, permlvl, con, table, GSTable, useDatabase)
+	})
+})
+
 client.on("message", async message => {
 	if (!message.guild) return;
 
