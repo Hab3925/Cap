@@ -5,7 +5,7 @@ module.exports.run = async (client, message, isTesting, cmd) => {
             client.automod.get(message.guild.id).forEach(m => {
                 const spacerList = `+(\\s|[^a-zA-Z])*`
                 let charArray = m.split('');
-                let wordWithRegex = '(\\s|^)' + charArray.join(spacerList) + '+(\s|$|([^a-zA-Z]*(\s*[^a-zA-Z]|$)))';
+                let wordWithRegex = '(\\S|^|\\s)' + charArray.join(spacerList) + '+(\s|$|([^a-zA-Z]*(\s*[^a-zA-Z]|$)))';
                 let regexObj = RegExp(wordWithRegex, 'gmiu');
                 console.log(regexObj)
                 if (message.content.toLowerCase().match(regexObj)) {
