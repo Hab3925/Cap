@@ -91,7 +91,7 @@ exports.help = {
     name: "reward",
     desc: "Set a reward for people reacing a certan level",
     aliases: ['re', 'rw'],
-    permLvl: 2,
+    permLvl: 1,
     hidden: false,
     category: "admin",
     usage: "reward [@role/:emoji:] [level/@role] *to remove:* reward delete [@role/:emoji:]"
