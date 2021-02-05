@@ -10,7 +10,6 @@
     "fs": "0.0.1-security",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.7",
-    "reddit-simple": "^2.1.1",
     "superagent": "^6.1.0"
   },
   "devDependencies": {},

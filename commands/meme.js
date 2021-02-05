@@ -1,10 +1,12 @@
 let cooldown = new Set();
 module.exports.run = async (client, message, args) => {
-
+    return message.channel.send("This command has been temporarily disabled")
     let cdseconds = 15;
     const Discord = require('discord.js')
 
-    if (cooldown.has(message.author.id)) return message.channel.send("You have to wait 15 seconds to use this again.").then(msg => msg.delete({ timeout: 5000 }));
+    if (cooldown.has(message.author.id)) return message.channel.send("You have to wait 15 seconds to use this again.").then(msg => msg.delete({
+        timeout: 5000
+    }));
     cooldown.add(message.author.id)
     setTimeout(() => {
         cooldown.delete(message.author.id)
@@ -24,7 +26,9 @@ module.exports.run = async (client, message, args) => {
         return msg.edit('I am unable to generate any memes at the moment :sob: \nPlease check in later!');
     }
 
-    let { body } = await superagent
+    let {
+        body
+    } = await superagent
         .get(`https://www.reddit.com/r/${subreddits[rand]}.json?limit=100`);
 
     let rnd = Math.floor(Math.random() * body.data.children.length)
@@ -44,7 +48,10 @@ module.exports.run = async (client, message, args) => {
             .setDescription(`[${title}](${link})`)
             .setImage(img)
             .setTimestamp()
-            .setFooter('The Captain', client.user.avatarURL({ format: 'png', size: 2048 }))
+            .setFooter('The Captain', client.user.avatarURL({
+                format: 'png',
+                size: 2048
+            }))
         message.channel.send(embed);
 
         msg.delete();
@@ -54,7 +61,10 @@ module.exports.run = async (client, message, args) => {
             .setDescription(`[${title}](${link})`)
             .setImage(img)
             .setTimestamp()
-            .setFooter('The Captain', client.user.avatarURL({ format: 'png', size: 2048 }))
+            .setFooter('The Captain', client.user.avatarURL({
+                format: 'png',
+                size: 2048
+            }))
         message.channel.send(embed);
 
         msg.delete();
