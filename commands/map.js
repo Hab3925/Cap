@@ -14,6 +14,6 @@ exports.help = {
     aliases: [],
     permLvl: 0,
     hidden: false,
-    category: "misc",
-    usage: ".link [SteamID] (delete)"
+    category: "volc",
+    usage: ".map"
 }

@@ -15,14 +15,19 @@ module.exports.run = async (client, message, args, prefix, con, table, permlvl, 
 
             roles.sort(sort)
             let rewardRoles = [];
-            roles.forEach(r => { rewardRoles.push(`**<@&${r.role}>:** Lvl ${r.lvl}`) })
+            roles.forEach(r => {
+                rewardRoles.push(`**<@&${r.role}>:** Lvl ${r.lvl}`)
+            })
 
             const embed = new Discord.MessageEmbed()
                 .setColor('#C54816')
                 .setTitle('Role rewards:')
                 .setDescription(rewardRoles.join('\n\n'))
                 .setTimestamp()
-                .setFooter('The Captain', client.user.avatarURL({ format: 'png', size: 2048 }))
+                .setFooter('The Captain', client.user.avatarURL({
+                    format: 'png',
+                    size: 2048
+                }))
             message.channel.send(embed)
         })
         return;
@@ -49,7 +54,7 @@ module.exports.run = async (client, message, args, prefix, con, table, permlvl, 
 
             let roles = JSON.parse(result[0].roles)
 
-            if (!args[1]) return message.channel.send(`You have to add what level you want to reward this role at! (\`${exports.help.usage}\`)`)
+            if (!args[0]) return message.channel.send(`You have to add what level you want to reward this role at! (\`${exports.help.usage}\`)`)
             if (!/\d/.test(args[1])) return message.channel.send(`You didnt provide a valid number for the level! (\`${exports.help.usage}\`)`)
             if (!roles[0]) {
                 con.query(`UPDATE ${GSTable} SET roles = '[{"role": "${args[0].replace(/<|@|&|>/g, '')}", "lvl": ${args[1]}}]' WHERE guildID = ${message.guild.id}`)
@@ -65,7 +70,10 @@ module.exports.run = async (client, message, args, prefix, con, table, permlvl, 
                     reply.push(1)
                     const response = await client.awaitReply(message, `This role is already rewarded at level ${r.lvl}, do you want to change this? (y = yes, n = no)`, 60000);
                     if (response.toLowerCase() === 'y' || response.toLowerCase() === 'yes') {
-                        roles[i] = { role: args[0].replace(/<|@|&|>/g, ''), lvl: parseInt(args[1]) }
+                        roles[i] = {
+                            role: args[0].replace(/<|@|&|>/g, ''),
+                            lvl: parseInt(args[1])
+                        }
                         con.query(`UPDATE ${GSTable} SET roles = '${JSON.stringify(roles)}' WHERE guildID = ${message.guild.id}`)
                         message.channel.send(`Users will now be rewarded the role ${args[0]} at lvl ${args[1]}`)
                         return;
@@ -75,7 +83,10 @@ module.exports.run = async (client, message, args, prefix, con, table, permlvl, 
                     }
                 } else {
                     if (!roles[i + 1] && !reply[0]) {
-                        roles.push({ role: args[0].replace(/<|@|&|>/g, ''), lvl: parseInt(args[1]) })
+                        roles.push({
+                            role: args[0].replace(/<|@|&|>/g, ''),
+                            lvl: parseInt(args[1])
+                        })
                         con.query(`UPDATE ${GSTable} SET roles = '${JSON.stringify(roles)}' WHERE guildID = ${message.guild.id}`)
                         message.channel.send(`Users will now be rewarded the role ${args[0]} at lvl ${args[1]}`)
                         return;
