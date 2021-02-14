@@ -1,16 +1,9 @@
 module.exports.run = async (client, message, isTesting, command, prefix, permlvl) => {
     // Image Only
     // By running this before the other commands, we both stop the user from getting XP from this and stop bot replies from remaining in the image-only channel.
-    let imageOnlyChannelIds = client.ImageOnly.get("channels");
-    let msg = message.content.toUpperCase();
+    let imageOnlyChannelIds = client.ImageOnly.get(message.guild.id);
 
     if (imageOnlyChannelIds && imageOnlyChannelIds.includes(message.channel.id)) {
-        if (msg.startsWith(prefix) && command == "unlock" && permlvl >= 1) {
-            // Passing the outermost if guarantees that our originating channel ID must be in the array so it's safe to assume that indexOf will always find a valid entry.
-            imageOnlyChannelIds.splice(imageOnlyChannelIds.indexOf(message.channel.id), 1);
-            client.ImageOnly.set("channels", imageOnlyChannelIds);
-            return message.channel.send("This channel has been unlocked");
-        }
         let attatchment = message.attachments.array();
         if (permlvl <= 2) {
             if (
