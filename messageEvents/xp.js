@@ -4,6 +4,10 @@ module.exports.run = async (client, message, isTesting, command, prefix, permlvl
     if (!useDatabase) return;
 
     //xp
+    if (!client.disabledXp.has(message.guild.id)) return
+    let disabledChannels = client.disabledXp.get(message.guild.id)
+    if (disabledChannels.includes(message.channel.id)) return
+
     let msg = message.content.toUpperCase();
 
     if (!cooldown.has(message.author.id)) {
@@ -23,7 +27,7 @@ module.exports.run = async (client, message, isTesting, command, prefix, permlvl
 
                     if (profilePic == null)
                         profilePic =
-                            "https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
+                        "https://discordapp.com/assets/dd4dbc0016779df1378e7812eabaa04d.png";
                     if (user === undefined || user === null)
                         return con.query(
                             `INSERT INTO ${table} (ID, UserID, Nickname, xp, level, profilePic, percentageToNextLvl, requieredXp, totalxp, colour, rankCard, boosts, guildID) VALUES (NULL, "${message.author.id}", "${nickname}", "${gainedXp}", 0, "${profilePic}", ${gainedXp}, "100", "${gainedXp}", "#C54816", 0, 0, ${message.guild.id})`
@@ -77,9 +81,9 @@ module.exports.run = async (client, message, isTesting, command, prefix, permlvl
                             `UPDATE ${table} SET Nickname = '${nickname}' WHERE UserID = ${message.author.id} AND guildID='${message.guild.id}'`
                         );
                     if (user.profilePic !== message.author.avatarURL({
-                        format: 'png',
-                        size: 2048
-                    }))
+                            format: 'png',
+                            size: 2048
+                        }))
                         con.query(
                             `UPDATE ${table} SET profilePic = '${profilePic}' WHERE UserID = ${message.author.id}`
                         );
