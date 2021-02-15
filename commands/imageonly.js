@@ -1,10 +1,11 @@
 module.exports.run = async (client, message, args) => {
     const Discord = require('discord.js')
-    const channels = client.ImageOnly.get(message.guild.id)
-
     if (!client.ImageOnly.has(message.guild.id)) {
         client.ImageOnly.set(message.guild.id, [])
     }
+    const channels = client.ImageOnly.get(message.guild.id)
+
+
 
     if (!args[0]) {
         if (!channels) return message.channel.send(`There are no image only channels on this server. Limit a channel to images only with this command: \`${exports.help.usage}\``)
