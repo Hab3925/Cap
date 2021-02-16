@@ -1,6 +1,5 @@
 let cooldown = new Set();
 module.exports.run = async (client, message, args) => {
-    return message.channel.send("This command has been temporarily disabled")
     let cdseconds = 15;
     const Discord = require('discord.js')
 
