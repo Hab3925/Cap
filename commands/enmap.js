@@ -1,12 +1,21 @@
 module.exports.run = async (client, message, args) => {
     if (client[args[0]] instanceof Map) {
         if (args[1] == "delete") {
-            client[args[0]].deleteAll()
-            message.channel.send(`Deleted content of ${args[0]}`)
+            try {
+                client[args[0]].clear()
+                message.channel.send(`Deleted content of ${args[0]}`)
+            } catch (e) {
+                message.channel.send(`Cannot delete content because: \`${e}\``)
+            }
         } else if (args[1] == "set") {
-            if (!args[2] && args[3]) return message.channel.send("You need to add the content you want to set")
-            client[args[0]].set(args[2], JSON.parse(args[3]))
-            message.channel.send(`Set ${args[2]} = ${args[3]} in ${args[0]}`)
+            if (!args[3]) return message.channel.send("You need to add the content you want to set")
+            try {
+                client[args[0]].set(args[2], JSON.parse(args[3]))
+                message.channel.send(`Set ${args[2]} = ${args[3]} in ${args[0]}`)
+            } catch {
+                client[args[0]].set(args[2], args[3])
+                message.channel.send(`Set ${args[2]} = ${args[3]} in ${args[0]}`)
+            }
         } else if (args[1] == "get") {
             if (!args[2]) return message.channel.send("You have to say what variable you want to `get`")
             message.channel.send(client[args[0]].get(args[2]))

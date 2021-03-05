@@ -1,10 +1,11 @@
 let cooldown = new Set();
 module.exports.run = async (client, message, args) => {
-
     let cdseconds = 15;
     const Discord = require('discord.js')
 
-    if (cooldown.has(message.author.id)) return message.channel.send("You have to wait 15 seconds to use this again.").then(msg => msg.delete({ timeout: 5000 }));
+    if (cooldown.has(message.author.id)) return message.channel.send("You have to wait 15 seconds to use this again.").then(msg => msg.delete({
+        timeout: 5000
+    }));
     cooldown.add(message.author.id)
     setTimeout(() => {
         cooldown.delete(message.author.id)
@@ -16,16 +17,17 @@ module.exports.run = async (client, message, args) => {
     let subreddits = ['funny', 'memes', 'dankmemes']
     let rand = Math.floor(Math.random() * subreddits.length)
 
+    let {
+        body
+    }
+
     try {
-        await superagent
+        body = await superagent
             .get(`https://www.reddit.com/r/${subreddits[rand]}.json?limit=100`);
     } catch (e) {
         console.log('Memes didnt load because: ' + e);
         return msg.edit('I am unable to generate any memes at the moment :sob: \nPlease check in later!');
     }
-
-    let { body } = await superagent
-        .get(`https://www.reddit.com/r/${subreddits[rand]}.json?limit=100`);
 
     let rnd = Math.floor(Math.random() * body.data.children.length)
     let img = body.data.children[rnd].data.url;
@@ -40,21 +42,27 @@ module.exports.run = async (client, message, args) => {
         let link = 'https://reddit.com' + body.data.children[rnd].data.permalink;
 
         let embed = new Discord.MessageEmbed()
-            .setColor('#FF5700')
+            .setColor('#28DFAF')
             .setDescription(`[${title}](${link})`)
             .setImage(img)
             .setTimestamp()
-            .setFooter('The Captain', client.user.avatarURL({ format: 'png', size: 2048 }))
+            .setFooter('The Captain', client.user.avatarURL({
+                format: 'png',
+                size: 2048
+            }))
         message.channel.send(embed);
 
         msg.delete();
     } else {
         let embed = new Discord.MessageEmbed()
-            .setColor('#FF5700')
+            .setColor('#28DFAF')
             .setDescription(`[${title}](${link})`)
             .setImage(img)
             .setTimestamp()
-            .setFooter('The Captain', client.user.avatarURL({ format: 'png', size: 2048 }))
+            .setFooter('The Captain', client.user.avatarURL({
+                format: 'png',
+                size: 2048
+            }))
         message.channel.send(embed);
 
         msg.delete();

@@ -7,7 +7,6 @@ module.exports.run = async (client, message, isTesting, cmd) => {
                 let charArray = m.split('');
                 let wordWithRegex = '(\\S|^|\\s)' + charArray.join(spacerList) + '+(\s|$|([^a-zA-Z]*(\s*[^a-zA-Z]|$)))';
                 let regexObj = RegExp(wordWithRegex, 'gmiu');
-                console.log(regexObj)
                 if (message.content.toLowerCase().match(regexObj)) {
                     message.delete()
                     message.author.send(`You are not allowed to use the word "${m}" in ${message.guild.name}!`);

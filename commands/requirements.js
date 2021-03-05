@@ -10,7 +10,9 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
         msg.edit("I wasnt able to get the requirements for volcanoids at the moment! Try again later!")
     }
 
-    let { body } = await superagent.get('https://store.steampowered.com/api/appdetails?appids=951440')
+    let {
+        body
+    } = await superagent.get('https://store.steampowered.com/api/appdetails?appids=951440')
 
     if (!args[0]) {
         let embed = new Discord.MessageEmbed()
@@ -43,14 +45,14 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
             .addField('\u200B', body['951440'].data.pc_requirements.recommended.replace(/<.?strong>/gm, "**").replace(/<li>/gm, "\r\n - ").replace(/<.+?>/gm, ""), true)
             .setColor("#3FB22D")
         msg.edit('', embed)
-        
+
     }
 }
 
 exports.help = {
     name: "requirements",
     desc: "Gives you the required specs to run volcanoids",
-    aliases: ['req'],
+    aliases: ['req, specs'],
     permLvl: 0,
     hidden: false,
     category: "volc",

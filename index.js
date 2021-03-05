@@ -31,7 +31,7 @@ let con = mysql.createConnection({
 	user: process.env.capConU,
 	password: process.env.capConP,
 	database: process.env.capConD,
-	charset: process.env.capConC
+	charset: "utf8mb4_unicode_ci"
 });
 
 const Enmap = require("enmap");
@@ -45,9 +45,6 @@ client.disabledCmds = new Enmap({
 client.ImageOnly = new Enmap({
 	name: "channels"
 });
-client.smc = new Enmap({
-	name: "smc"
-});
 client.automod = new Enmap({
 	name: "automod"
 })
@@ -57,8 +54,8 @@ client.steam = new Enmap({
 client.logchn = new Enmap({
 	name: "logchn"
 })
-client.autoreply = new Enmap({
-	name: "autoreply"
+client.disabledXp = new Enmap({
+	name: "disabledXp"
 })
 
 client.on("ready", async () => {
@@ -124,6 +121,7 @@ require("./utility/time.js")(client);
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
 
+	if (oldMessage.author.bot || newMessage.author.bot) return;
 	let prefix = client.prefixes.get(newMessage.guild.id);
 	let args = newMessage.content
 		.slice(prefix.length)
@@ -206,7 +204,8 @@ client.on("message", async message => {
 		return message.channel.send(
 			"You dont have the permission to use this command!"
 		);
-	if (message.guild.id !== "444244464903651348") {
+		//	  Volcanoids		Captains Submarine		  Drillkea
+	if (!["444244464903651348","488708757304639520","798898566214844427"].includes(message.guild.id)) {
 		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
 
