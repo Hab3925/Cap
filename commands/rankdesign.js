@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                             if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => { msg.delete({ timeout: 5000 }) });
                             if (state[0] == 0) return;
                             state.push(state[0] - 1); state.shift();
-                            cardDisplay.edit(client.rankcard(user, rank, state[0]))
+                            cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))
                             cooldown.add(message.author.id)
                             setTimeout(() => {
                                 cooldown.delete(message.author.id)
@@ -63,7 +63,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                             if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => { msg.delete({ timeout: 5000 }) });
                             if (state[0] == 1) return;
                             state.push(state[0] + 1); state.shift();
-                            cardDisplay.edit(client.rankcard(user, rank, state[0]))
+                            cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))
                             setTimeout(() => {
                                 cooldown.delete(message.author.id)
                             }, cdseconds);

@@ -188,4 +188,8 @@ module.exports = (client, useDatabase) => {
             }
         })
     }
+
+    client.updateDatabase = (con) => {
+        con.query()
+    }
 }

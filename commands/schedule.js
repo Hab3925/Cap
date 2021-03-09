@@ -4,7 +4,7 @@ module.exports.run = async (client, message, args, prefix, con) => {
     //title detection
     let title = ""
     for (i = 0; i < args.length; i++) {
-        if (args[i] == "in") {
+        if (args[i] == "in" || args[i] == "tomorrow" || args[i] == "next") {
             break
         } else {
             title += `${args[i]} `
@@ -39,6 +39,7 @@ module.exports.run = async (client, message, args, prefix, con) => {
     let startTime = new Date().getTime() + timezone * 3600000
     let endTime = await client.humanToComputerTime(args, message, con, exports.help.name)
     let displayTime = await client.computerToHumanTime(startTime)
+    console.log(startTime, endTime)
     let embed = new Discord.MessageEmbed()
         .setTitle(title)
         .setDescription(`Time left: ${client.timeDiff(startTime, endTime)}\nReact with ✅ to join`)
