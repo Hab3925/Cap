@@ -1,8 +1,6 @@
 module.exports.run = async (client, message, args) => {
-    // or, if you can't get the id:
-    const mutedRole = message.guild.roles.cache.find(
-        (role) => role.name === 'Muted'
-    );
+
+    
 
     // if there is no `Muted` role, send an error
     if (!mutedRole)
