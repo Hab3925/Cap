@@ -57,6 +57,9 @@ client.logchn = new Enmap({
 client.disabledXp = new Enmap({
 	name: "disabledXp"
 })
+client.mute = new Enmap({
+	name: "mute"
+})
 
 client.on("ready", async () => {
 	if (useDatabase) await client.connect(con);
@@ -120,6 +123,8 @@ require("./utility/embeds.js")(client);
 require("./utility/time.js")(client);
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
+	if (!newMessage.guild) return;
+	if (newMessage.author.bot) return;
 
 	if (oldMessage.author.bot || newMessage.author.bot) return;
 	let prefix = client.prefixes.get(newMessage.guild.id);
@@ -150,7 +155,6 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
 
 client.on("message", async message => {
 	if (!message.guild) return;
-
 	if (message.author.bot) return;
 
 	// Updating the members in the database
@@ -204,8 +208,8 @@ client.on("message", async message => {
 		return message.channel.send(
 			"You dont have the permission to use this command!"
 		);
-		//	  Volcanoids		Captains Submarine		  Drillkea
-	if (!["444244464903651348","488708757304639520","798898566214844427"].includes(message.guild.id)) {
+	//	  Volcanoids		Captains Submarine		  Drillkea
+	if (!["444244464903651348", "488708757304639520", "798898566214844427"].includes(message.guild.id)) {
 		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
 

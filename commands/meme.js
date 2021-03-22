@@ -17,9 +17,7 @@ module.exports.run = async (client, message, args) => {
     let subreddits = ['funny', 'memes', 'dankmemes']
     let rand = Math.floor(Math.random() * subreddits.length)
 
-    let {
-        body
-    }
+    let body
 
     try {
         body = await superagent

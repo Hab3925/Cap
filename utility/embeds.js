@@ -29,7 +29,7 @@ module.exports = (client) => {
         embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
-            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
             .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
             .setTimestamp()
         return embed;
@@ -46,7 +46,7 @@ module.exports = (client) => {
             .setTimestamp()
             .setFooter(user.Nickname, user.profilePic)
             .setColor(user.colour)
-            .addField(`${user.xp}xp / ${user.requieredXp}xp #${rank}`, `${xpBar.join('')} Lvl ${user.level + 1}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .addField(`${user.xp}xp / ${user.requieredXp}xp #${rank}`, `${xpBar.join('')} Lvl ${user.level + 1}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
         return embed;
     }
 
@@ -63,7 +63,7 @@ module.exports = (client) => {
         embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
-            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
             .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
             .setTimestamp()
 
@@ -86,7 +86,7 @@ module.exports = (client) => {
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
             .setFooter(`Level ${user.level}`)
-            .setDescription(`${user.xp}xp / ${user.requieredXp}xp\n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [Patreon](https://www.patreon.com/volcanoids_thecaptain)`)
+            .setDescription(`${user.xp}xp / ${user.requieredXp}xp\n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
             .setTimestamp()
 
         return embed

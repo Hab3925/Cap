@@ -115,27 +115,13 @@ module.exports = (client) => {
                         break
                     }
                 } else if (humanTime[i].toLowerCase() == "tomorrow") {
-                    if (!humanTime[i + 1] || !humanTime[i + 2]) {
-                        type = 3
-                        break
-                    } else if (humanTime[i + 1].toLowerCase() == "at") {
+                    if (humanTime[i + 1].toLowerCase() == "at") {
                         if (numWordsH.includes(humanTime[i + 2]) || humanTime[i + 2].match(/[1-24]/gm)) {
                             type = 1
                             break
                         }
-
-
                     } else {
-                        type = 3
-                        break
-                    }
-                } else if (humanTime[i].toLowerCase() == "next") {
-                    if (!humanTime[i + 1] || !humanTime[i + 2] || !humanTime[i + 3]) {
-                        err = "missingArgs";
-                        break
-                    }
-                    if (humanTime[i + 1].toLowerCase() !== "week") {
-                        err = "incorrectArgs"
+                        err = "missingArgs"
                         break
                     }
                 }
@@ -145,8 +131,11 @@ module.exports = (client) => {
 
             con.query(`SELECT timezone from timezones where UserID = ${msg.author.id}`, async function (err, result) {
                 if (type == 1) {
+
                     let numdays = humanTime[i + 1]
                     let time = humanTime[i + 4]
+
+                    if (!humanTime[i + 4]) time = humanTime[i + 2]
 
                     if (!time.match(/[0-2][0-3]:[0-5][0-9]/)) {
                         msg.channel.send(`I dont understand when you want your ${event} to happen!`);
@@ -161,22 +150,23 @@ module.exports = (client) => {
                             reject("timezone")
                         } else {
                             let timeArr = time.split(":")
-                            let hr = timeArr[0]
-                            let min = timeArr[1]
+                            let hr = parseInt(timeArr[0])
+                            let min = parseInt(timeArr[1])
                             let nowHr = new Date().getUTCHours()
                             let nowMin = new Date().getUTCMinutes()
                             let nowSec = new Date().getUTCSeconds()
 
+
                             if (!numdays.match(/^[0-9]+$/)) {
                                 let days;
-                                let i = 1;
+                                let j = 1;
                                 numWordsD.forEach(w => {
-                                    i++
-                                    if (numdays.toLowerCase() == w) days = i;
-                                    if (numdays.toLowerCase() == "tomorrow") days = 1
+                                    j++
+                                    if (numdays.toLowerCase() == w) days = j;
+                                    if (humanTime[i] == "tomorrow") days = 1
                                 })
 
-                                let output = new Date().getTime() + days * day + (hr * hour - nowHr * hour) + (min * minute - nowMin * minute) - nowSec * sec;
+                                let output = new Date().getTime() + parseInt(days) * day + (hr * hour - nowHr * hour) + (min * minute - nowMin * minute) - nowSec * sec;
                                 resolve(output)
 
                             } else {
@@ -186,22 +176,23 @@ module.exports = (client) => {
                         }
                     } else {
                         let timeArr = time.split(":")
-                        let hr = timeArr[0]
-                        let min = timeArr[1]
+                        let hr = parseInt(timeArr[0])
+                        let min = parseInt(timeArr[1])
                         let nowHr = new Date().getUTCHours()
                         let nowMin = new Date().getUTCMinutes()
                         let nowSec = new Date().getUTCSeconds()
-                        let timezone = result[0].timezone;
+                        let timezone = parseInt(result[0].timezone);
 
                         if (!numdays.match(/^[0-9]+$/)) {
                             let days;
-                            let i = 1;
+                            let j = 1;
                             numWordsD.forEach(w => {
-                                i++
-                                if (numdays.toLowerCase() == w) days = i;
+                                j++
+                                if (numdays.toLowerCase() == w) days = j;
+                                if (humanTime[i] == "tomorrow") days = 1
                             })
 
-                            let output = new Date().getTime() + days * day + timezone * hour + (hr * hour - nowHr * hour) + (min * minute - nowMin * minute) - nowSec * sec;
+                            let output = new Date().getTime() + parseInt(days) * day + timezone * hour + (hr * hour - nowHr * hour) + (min * minute - nowMin * minute) - nowSec * sec;
                             resolve(output)
 
                         } else {
@@ -282,51 +273,8 @@ module.exports = (client) => {
                         }
                     }
                 }
-
-                if (type == 3) {
-                    if (!result[0]) {
-                        let utc = await client.awaitReply(msg, "You havent saved your timezone yet, head over to https://thecaptain.ga/timezone to set ur timezone! \n\n Or do you want to run your commands relative to UTC/GMT? (y=yes, n=no)", 60000, false)
-
-                        if (utc.toLowerCase() !== "y") {
-                            msg.channel.send("Save your timezone at https://thecaptain.ga/timezone, and run the command again!")
-                            resolve()
-                        } else {
-                            if (!numDays.match(/^[0-9]+$/)) {
-                                let days;
-                                let i = 1;
-                                numWordsD.forEach(w => {
-                                    i++
-                                    if (numDays.toLowerCase() == w) days = i;
-                                    if (numdays.toLowerCase() == "tomorrow") days = 1
-                                })
-                                let output = new Date().getTime() + days * day
-                                resolve(output)
-                            } else {
-                                let output = new Date().getTime() + numDays * day
-                                resolve(output)
-                            }
-                        }
-                    } else {
-                        if (!numDays.match(/^[0-9]+$/)) {
-                            let hours;
-                            let i = 1;
-                            numWordsD.forEach(w => {
-                                i++
-                                if (numDays.toLowerCase() == w) hours = i;
-                            })
-                            let timezone = result[0].timezone
-                            let output = new Date().getTime() + timezone * hour + hours * hour
-                            resolve(output)
-                        } else {
-                            let timezone = result[0].timezone
-                            let output = new Date().getTime() + timezone * hour + parseInt(numDays) * hour;
-                            resolve(output)
-                        }
-                    }
-                }
             })
 
         })
     }
-
 }
