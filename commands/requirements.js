@@ -52,7 +52,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
 exports.help = {
     name: "requirements",
     desc: "Gives you the required specs to run volcanoids",
-    aliases: ['req, specs'],
+    aliases: ['req', 'specs'],
     permLvl: 0,
     hidden: false,
     category: "volc",

@@ -205,8 +205,8 @@ client.on("message", async message => {
 		return message.channel.send(
 			"You dont have the permission to use this command!"
 		);
-		//	  Volcanoids		Captains Submarine		  Drillkea
-	if (!["444244464903651348","488708757304639520","798898566214844427"].includes(message.guild.id)) {
+
+	if (message.guild.id == "444244464903651348") {
 		if (cmd.help.category == "volc" && permlvl < 5) return;
 	}
 
@@ -226,12 +226,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -240,12 +240,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);
