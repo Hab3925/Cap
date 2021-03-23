@@ -9,6 +9,8 @@ module.exports.run = async (client, message, args) => {
 
     let obj = client.mute.get(message.guild.id)
 
+    if (!args[0]) return message.channel.send("You need to tell me who to mute!")
+
     //if user mentions a role
     if (args[0].match(/<@&\d{18}>/g)) {
         if (obj.role != undefined) {
@@ -33,7 +35,11 @@ module.exports.run = async (client, message, args) => {
         if (!message.guild.roles.cache.has(obj.role)) return message.channel.send("The current mute role doesent exist! You need to set a new one.")
 
         const target = message.mentions.members.first();
-        target.roles.add(mutedRole);
+        try {
+            target.roles.add(mutedRole);
+        } catch {
+            return message.channel.send("I dont have the permissions to mute people! Make sure i can edit roles and that my role is over the muted role!")
+        }
 
         if (!args[1]) args[1] = ""
 
@@ -45,6 +51,7 @@ module.exports.run = async (client, message, args) => {
             })
             client.mute.set(message.guild.id, obj)
             message.channel.send(`Muted ${args[0]} for ${args[1]} hours.`)
+            client.channels.cache.get(client.logchn.get(message.guild.id)).send(`<@${message.author.id}> muted ${args[0]} for ${args[1]} hours.`)
 
             //wait for timer to expire
             setTimeout(() => {
@@ -67,6 +74,8 @@ module.exports.run = async (client, message, args) => {
             })
             client.mute.set(message.guild.id, obj)
             message.channel.send(`Muted ${args[0]}`)
+            client.channels.cache.get(client.logchn.get(message.guild.id)).send(`<@${message.author.id}> muted ${args[0]}`)
+
         }
     }
 }
