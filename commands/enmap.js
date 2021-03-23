@@ -1,4 +1,7 @@
 module.exports.run = async (client, message, args) => {
+    const {
+        inspect
+    } = require("util");
     if (client[args[0]] instanceof Map) {
         if (args[1] == "delete") {
             try {
@@ -18,7 +21,7 @@ module.exports.run = async (client, message, args) => {
             }
         } else if (args[1] == "get") {
             if (!args[2]) return message.channel.send("You have to say what variable you want to `get`")
-            message.channel.send(client[args[0]].get(args[2]))
+            message.channel.send(`\`\`\`` + inspect(client[args[0]].get(args[2])) + `\`\`\``)
         } else {
             message.channel.send("Invalid operation")
         }

@@ -90,6 +90,15 @@ client.on("ready", async () => {
 			result.forEach(server => {
 				client.prefixes.set(server.guildID, server.prefix);
 				client.disabledCmds.set(server.guildID, server.lockedChannels);
+				if (client.mute.has(server.guildID)) {
+					client.mute.get(server.guildID).users.forEach(async (user) => {
+						if (user.time) {
+							let now = new Date().getTime()
+							const target = await (await (await client.guilds.fetch(server.guildID)).members.fetch(user.user))
+							if (user.time < now) target.roles.remove(client.mute.get(server.guildID).role)
+						}
+					})
+				}
 			});
 		});
 		console.log("Loaded guildsettings");
@@ -133,7 +142,6 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
 		.trim()
 		.split(" ");
 	let command = args.shift().toLowerCase();
-
 
 	// Permissions
 	let permlvl = 0;
@@ -229,12 +237,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-			format: 'png',
-			size: 2048
-		}) !== newUser.avatarURL({
-			format: 'png',
-			size: 2048
-		}))
+		format: 'png',
+		size: 2048
+	}) !== newUser.avatarURL({
+		format: 'png',
+		size: 2048
+	}))
 		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -243,12 +251,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-			format: 'png',
-			size: 2048
-		}) !== newGuild.iconURL({
-			format: 'png',
-			size: 2048
-		}))
+		format: 'png',
+		size: 2048
+	}) !== newGuild.iconURL({
+		format: 'png',
+		size: 2048
+	}))
 		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);
