@@ -94,7 +94,7 @@ client.on("ready", async () => {
 					client.mute.get(server.guildID).users.forEach(async (user) => {
 						if (user.time) {
 							let now = new Date().getTime()
-							const target = await (await (await client.guilds.fetch(server.guildID)).members.fetch(user.user))
+							const target = await (await client.guilds.fetch(server.guildID)).members.fetch(user.user)
 							if (user.time < now) target.roles.remove(client.mute.get(server.guildID).role)
 						}
 					})
@@ -130,6 +130,11 @@ client.on("guildDelete", guild => {
 require("./utility/functions.js")(client, useDatabase);
 require("./utility/embeds.js")(client);
 require("./utility/time.js")(client);
+
+client.on("guildMemberAdd", member => {
+	//console.log(member)
+	console.log("test")
+})
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
 	if (!newMessage.guild) return;
@@ -265,6 +270,7 @@ client.on("guildUpdate", (oldGuild, newGuild) => {
 			`UPDATE ${GSTable} SET guildName = '${newGuild.name}' WHERE guildID = '${newGuild.id}'`
 		);
 });
+
 
 client.on("error", console.error);
 client.login(loginToken);

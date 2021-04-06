@@ -83,7 +83,7 @@ module.exports.run = async (client, message, args) => {
 exports.help = {
     name: "mute",
     desc: "Mute a user.",
-    aliases: [""],
+    aliases: [],
     permLvl: 1,
     hidden: false,
     category: "admin",
