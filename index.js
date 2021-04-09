@@ -14,7 +14,7 @@ if (!loginToken) {
 
 //constants
 const Discord = require("discord.js");
-const client = new Discord.Client();
+const client = new Discord.Client({ ws: { intents: ['GUILD_MEMBERS'] } });
 const {
 	promisify
 } = require("util");
@@ -60,6 +60,10 @@ client.disabledXp = new Enmap({
 client.mute = new Enmap({
 	name: "mute"
 })
+
+client.on('guildMemberAdd', member => {
+	console.log("test")
+});
 
 client.on("ready", async () => {
 	if (useDatabase) await client.connect(con);
@@ -131,10 +135,7 @@ require("./utility/functions.js")(client, useDatabase);
 require("./utility/embeds.js")(client);
 require("./utility/time.js")(client);
 
-client.on("guildMemberAdd", member => {
-	//console.log(member)
-	console.log("test")
-})
+
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
 	if (!newMessage.guild) return;
