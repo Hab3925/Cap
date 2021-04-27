@@ -122,6 +122,8 @@ client.on("ready", async () => {
 
 //When user joins server that bot is in
 client.on('guildMemberAdd', member => {
+	if (!client.mute.has(member.guild.id)) return
+	if (!client.mute.get(member.guild.id).role) return
 	let role = client.mute.get(member.guild.id).role
 	client.mute.get(member.guild.id).users.forEach(user => {
 		if (user == member.user.id) {
