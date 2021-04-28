@@ -27,17 +27,31 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
             const cardDisplay = await message.channel.send(client.rankembed1(user, rank));
             const controllpanel = await message.channel.send(embed);
 
-            await controllpanel.react(arrowleft); await controllpanel.react(checkmark); await controllpanel.react(arrowright);
+            await controllpanel.react(arrowleft);
+            await controllpanel.react(checkmark);
+            await controllpanel.react(arrowright);
 
             setTimeout(() => {
                 const collector = controllpanel.createReactionCollector(r => {
-                    if (!r.users.cache.has(message.author.id)) return r.users.cache.forEach(u => { if (u.id !== client.user.id) r.users.remove(u); })
+                    
+                    if (!r.users.cache.has(message.author.id)) return r.users.cache.forEach(u => {
+                        if (u.id !== client.user.id) r.users.remove(u);
+                    })
                     switch (r.emoji.id) {
                         case arrowleft.id:
-                            r.users.cache.forEach(u => { if (u.id != client.user.id) { if (u.id !== client.user.id) r.users.remove(u); } });
-                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => { msg.delete({ timeout: 5000 }) });
+                            r.users.cache.forEach(u => {
+                                if (u.id != client.user.id) {
+                                    if (u.id !== client.user.id) r.users.remove(u);
+                                }
+                            });
+                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => {
+                                msg.delete({
+                                    timeout: 5000
+                                })
+                            });
                             if (state[0] == 0) return;
-                            state.push(state[0] - 1); state.shift();
+                            state.push(state[0] - 1);
+                            state.shift();
                             cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))
                             cooldown.add(message.author.id)
                             setTimeout(() => {
@@ -46,23 +60,46 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                             break;
 
                         case checkmark.id:
-                            r.users.cache.forEach(u => { if (u.id != client.user.id) { if (u.id !== client.user.id) r.users.remove(u); } });
-                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => { msg.delete({ timeout: 5000 }) });
+                            r.users.cache.forEach(u => {
+                                if (u.id != client.user.id) {
+                                    if (u.id !== client.user.id) r.users.remove(u);
+                                }
+                            });
+                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => {
+                                msg.delete({
+                                    timeout: 5000
+                                })
+                            });
                             con.query(`UPDATE ${table} SET rankCard = ${state[0]} WHERE UserID = ${message.author.id}`);
-                            if (state[0] == 0) cardname = '**Gears**'; else cardname = '**Lava**'
+                            if (state[0] == 0) cardname = '**Gears**';
+                            else cardname = '**Lava**'
                             message.reply(`Rankcard design changed to ${cardname}`);
                             collector.stop();
-                            cardDisplay.delete({ timeout: 5000 }); controllpanel.delete({ timeout: 5000 })
+                            cardDisplay.delete({
+                                timeout: 5000
+                            });
+                            controllpanel.delete({
+                                timeout: 5000
+                            })
                             setTimeout(() => {
                                 cooldown.delete(message.author.id)
                             }, cdseconds);
                             break;
 
                         case arrowright.id:
-                            r.users.cache.forEach(u => { if (u.id != client.user.id) { if (u.id !== client.user.id) r.users.remove(u); } });
-                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => { msg.delete({ timeout: 5000 }) });
+                            r.users.cache.forEach(u => {
+                                if (u.id != client.user.id) {
+                                    if (u.id !== client.user.id) r.users.remove(u);
+                                }
+                            });
+                            if (cooldown.has(message.author.id)) return message.channel.send('You are reacting to rapidly!').then(msg => {
+                                msg.delete({
+                                    timeout: 5000
+                                })
+                            });
                             if (state[0] == 1) return;
-                            state.push(state[0] + 1); state.shift();
+                            state.push(state[0] + 1);
+                            state.shift();
                             cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))
                             setTimeout(() => {
                                 cooldown.delete(message.author.id)

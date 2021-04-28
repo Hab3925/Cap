@@ -1,9 +1,10 @@
 module.exports.run = async (client, message, args, prefix, con, table, permLvl, GSTable) => {
-    client.guilds.cache.get("444244464903651348").channels.cache.get("620593627990720512").send(":eyes:", {
-        files: [{
-            attachment: "https://cdn.discordapp.com/attachments/518804683494522882/834705934054850610/78c4b28.jpg",
-        }]
-    })
+    const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === '188762891137056769';
+    const collector = message.createReactionCollector(filter, {
+        time: 15000
+    });
+    collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+    collector.on('end', collected => console.log(`Collected ${collected.size} items`));
 }
 
 exports.help = {
