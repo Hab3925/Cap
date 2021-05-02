@@ -14,7 +14,7 @@ exports.help = {
     name: "say",
     desc: "Make the captain say anything you would like.",
     aliases: [],
-    permLvl: 3,
+    permLvl: 2,
     hidden: false,
     category: "dev",
     usage: "say [message]"
