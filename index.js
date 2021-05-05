@@ -13,8 +13,12 @@ if (!loginToken) {
 //require("./messageEvents/autoreply.js"); return; // Error to abort after printing/testing regex.
 
 //constants
-const Discord = require("discord.js");
-const client = new Discord.Client({ ws: { intents: ['GUILD_MEMBERS'] } });
+const Discord = require('discord.js');
+const client = new Discord.Client({
+	ws: {
+		intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS', 'GUILD_MESSAGE_REACTIONS']
+	}
+});
 const {
 	promisify
 } = require("util");
@@ -34,6 +38,7 @@ let con = mysql.createConnection({
 	charset: "utf8mb4_unicode_ci"
 });
 
+//enmap setup
 const Enmap = require("enmap");
 client.commands = new Enmap();
 client.aliases = new Enmap();
@@ -61,10 +66,7 @@ client.mute = new Enmap({
 	name: "mute"
 })
 
-client.on('guildMemberAdd', member => {
-	console.log("test")
-});
-
+//When client is ready ( on bot startup )
 client.on("ready", async () => {
 	if (useDatabase) await client.connect(con);
 
@@ -118,6 +120,19 @@ client.on("ready", async () => {
 
 });
 
+//When user joins server that bot is in
+client.on('guildMemberAdd', member => {
+	if (!client.mute.has(member.guild.id)) return
+	if (!client.mute.get(member.guild.id).role) return
+	let role = client.mute.get(member.guild.id).role
+	client.mute.get(member.guild.id).users.forEach(user => {
+		if (user == member.user.id) {
+			member.roles.add(role)
+		}
+	})
+});
+
+// When bot joins a guild/server
 client.on("guildCreate", guild => {
 	let name = guild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	console.log(`| New Guild | ${guild.name} - ${guild.memberCount}`);
@@ -125,12 +140,14 @@ client.on("guildCreate", guild => {
 	if (useDatabase) con.query(query);
 });
 
+// When bot leaves a guild/server
 client.on("guildDelete", guild => {
 	console.log(`| Kicked | ${guild.name}`);
 	var query = `DELETE FROM ${GSTable} WHERE guildID='${guild.id}'`;
 	if (useDatabase) con.query(query);
 });
 
+//
 require("./utility/functions.js")(client, useDatabase);
 require("./utility/embeds.js")(client);
 require("./utility/time.js")(client);
@@ -243,12 +260,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -257,12 +274,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);

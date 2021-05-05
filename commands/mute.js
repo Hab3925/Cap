@@ -50,8 +50,8 @@ module.exports.run = async (client, message, args) => {
                 time: args[1] * 3600000 + new Date().getTime()
             })
             client.mute.set(message.guild.id, obj)
-            message.channel.send(`Muted ${args[0]} for ${args[1]} hours.`)
-            client.channels.cache.get(client.logchn.get(message.guild.id)).send(`<@${message.author.id}> muted ${args[0]} for ${args[1]} hours.`)
+            message.channel.send(`Muted ${args[0]} for ${args[1]} hour(s).`)
+            client.channels.cache.get(client.logchn.get(message.guild.id)).send(`<@${message.author.id}> muted ${args[0]} for ${args[1]} hour(s).`)
 
             //wait for timer to expire
             setTimeout(() => {
