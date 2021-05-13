@@ -18,7 +18,7 @@ module.exports = (client) => {
         return embed;
     }
 
-    client.rankembed1 = (user, rank, guildID) => {
+    client.gearrank = (user, rank, guildID) => {
         let xpBar = [];
         const gearfull = client.emojis.cache.find(emoji => emoji.name == 'gearfull');
         const gearempty = client.emojis.cache.find(emoji => emoji.name == 'gearempty');
@@ -50,7 +50,7 @@ module.exports = (client) => {
         return embed;
     }
 
-    client.rankembed3 = (user, rank, guildID) => {
+    client.lavarank = (user, rank, guildID) => {
         let xpBar = [];
         let i = 0
         times(Math.floor(user.percentageToNextLvl / 9))(() => {
@@ -58,7 +58,6 @@ module.exports = (client) => {
             i++
         });
         times(Math.ceil((100 - user.percentageToNextLvl) / 9))(() => xpBar.push(client.emojis.cache.find(emoji => emoji.name == `obsidian`)));
-
 
         embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
@@ -70,25 +69,42 @@ module.exports = (client) => {
         return embed;
     }
 
-    client.rankembed4 = (user, rank, guildID) => {
+    client.drillrank = (user, rank, guildID) => {
+
+        const dirt = client.emojis.cache.find(emoji => emoji.name == "Dirt")
+        const drill = client.emojis.cache.find(emoji => emoji.name == "Drill")
+        const segment = client.emojis.cache.find(emoji => emoji.name == "Segment")
+        const segmentEnd = client.emojis.cache.find(emoji => emoji.name == "SegmentBack")
+        const hole = client.emojis.cache.find(emoji => emoji.name == "Hole")
+        const end = client.emojis.cache.find(emoji => emoji.name == "DirtEnd")
+
         let xpBar = [];
 
-        let progress = Math.floor(user.percentageToNextLvl / 100);
-        if (progress == 0) {
-            xpBar.push(client.emojis.cache.get('687021068342394912'))
-            times(progress - 2(() => xpBar.push(client.emojis.cache.get('686951422679711799'))))
-        } else {
-            times(progress - 1(() => xpBar.push(client.emojis.cache.get('686951422679711799'))))
-            xpBar.push(client.emojis.cache.get('687021068342394912'))
+        xpBar.push(end)
+        times(Math.ceil((100 - user.percentageToNextLvl) / 10) - 1)(() => xpBar.unshift(dirt));
+        xpBar.unshift(drill)
+
+        if (Math.floor(user.percentageToNextLvl / 10) - 1 >= 3) {
+            xpBar.unshift(segment)
+            xpBar.unshift(segment)
+            xpBar.unshift(segmentEnd)
+        } else if (Math.floor(user.percentageToNextLvl / 10) - 1 == 2) {
+            xpBar.unshift(segment)
+            xpBar.unshift(segment)
+        } else if (Math.floor(user.percentageToNextLvl / 10) - 1 == 1) {
+            xpBar.unshift(segment)
         }
+
+        times(Math.floor((user.percentageToNextLvl) / 10) - 4)(() => xpBar.unshift(hole));
 
         let embed = new Discord.MessageEmbed()
             .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
             .setColor(user.colour)
-            .setFooter(`Level ${user.level}`)
-            .setDescription(`${user.xp}xp / ${user.requieredXp}xp\n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
+            .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
             .setTimestamp()
 
-        return embed
+        return embed;
+
     }
 }
