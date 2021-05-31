@@ -20,8 +20,8 @@ module.exports = (client) => {
 
     client.gearrank = (user, rank, guildID) => {
         let xpBar = [];
-        const gearfull = client.emojis.cache.find(emoji => emoji.name == 'gearfull');
-        const gearempty = client.emojis.cache.find(emoji => emoji.name == 'gearempty');
+        const gearfull = client.emojis.cache.get('558183850304471052');
+        const gearempty = client.emojis.cache.get('558184027736113172');
 
         times(Math.floor(user.percentageToNextLvl / 10))(() => xpBar.push(gearfull));
         times(Math.ceil((100 - user.percentageToNextLvl) / 10))(() => xpBar.push(gearempty));
@@ -50,7 +50,7 @@ module.exports = (client) => {
         return embed;
     }
 
-    client.lavarank = (user, rank, guildID) => {
+    client.OLDlavarank = (user, rank, guildID) => {
         let xpBar = [];
         let i = 0
         times(Math.floor(user.percentageToNextLvl / 9))(() => {
@@ -69,14 +69,33 @@ module.exports = (client) => {
         return embed;
     }
 
+    client.lavarank = (user, rank, guildID) => {
+        let xpBar = [];
+        const lava = client.emojis.cache.get('848871336596340766');
+        const lavatip = client.emojis.cache.get('848871442926010379');
+        const dirt = client.emojis.cache.get('848871499007787028');
+
+        times(Math.floor(user.percentageToNextLvl / 10) - 1)(() => xpBar.push(lava));
+        xpBar.push(lavatip)
+        times(Math.ceil((100 - user.percentageToNextLvl) / 10))(() => xpBar.push(dirt));
+
+        embed = new Discord.MessageEmbed()
+            .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
+            .setColor(user.colour)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
+            .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
+            .setTimestamp()
+        return embed;
+    }
+
     client.drillrank = (user, rank, guildID) => {
 
-        const dirt = client.emojis.cache.find(emoji => emoji.name == "Dirt")
-        const drill = client.emojis.cache.find(emoji => emoji.name == "Drill")
-        const segment = client.emojis.cache.find(emoji => emoji.name == "Segment")
-        const segmentEnd = client.emojis.cache.find(emoji => emoji.name == "SegmentBack")
-        const hole = client.emojis.cache.find(emoji => emoji.name == "Hole")
-        const end = client.emojis.cache.find(emoji => emoji.name == "DirtEnd")
+        const dirt = client.emojis.cache.get('839452362065444894')
+        const drill = client.emojis.cache.get('839456993886208020')
+        const segment = client.emojis.cache.get('839456993885945866')
+        const segmentEnd = client.emojis.cache.get('839456993059799080')
+        const hole = client.emojis.cache.get('839456992275202048')
+        const end = client.emojis.cache.get('839457911636754453')
 
         let xpBar = [];
 
