@@ -260,12 +260,12 @@ client.on("guildMemberUpdate", (oldMember, newMember) => {
 
 client.on("userUpdate", (oldUser, newUser) => {
 	if (oldUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}) !== newUser.avatarURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newUser.avatarURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${table} SET profilePic = '${newUser.avatarURL({ format: 'png', size: 2048 })}' WHERE UserID = '${newUser.id}'`
 		);
@@ -274,12 +274,12 @@ client.on("userUpdate", (oldUser, newUser) => {
 client.on("guildUpdate", (oldGuild, newGuild) => {
 	newGuild.name.replace(/'/g, `\\'`).replace(/"/g, `\\"`);
 	if (oldGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}) !== newGuild.iconURL({
-		format: 'png',
-		size: 2048
-	}))
+			format: 'png',
+			size: 2048
+		}) !== newGuild.iconURL({
+			format: 'png',
+			size: 2048
+		}))
 		if (useDatabase) con.query(
 			`UPDATE ${GSTable} SET guildIcon = '${newGuild.iconURL({ format: 'png', size: 2048 })}' WHERE guildID = '${newGuild.id}'`
 		);
