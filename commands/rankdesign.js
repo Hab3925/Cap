@@ -98,7 +98,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                                     timeout: 5000
                                 })
                             });
-                            if (state[0] == 2) return;
+                            if (state[0] == 3) return;
                             state.push(state[0] + 1);
                             state.shift();
                             cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))

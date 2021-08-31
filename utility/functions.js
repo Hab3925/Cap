@@ -74,6 +74,8 @@ module.exports = (client, useDatabase) => {
                 return client.lavarank(user, rank, guildID)
             case 2:
                 return client.drillrank(user, rank, guildID)
+            case 3:
+                return client.submarinerank(user, rank, guildID)
         }
     }
 

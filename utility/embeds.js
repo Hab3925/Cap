@@ -126,4 +126,32 @@ module.exports = (client) => {
         return embed;
 
     }
+
+    client.submarinerank = (user, rank, guildID) => {
+        const ocean = client.emojis.cache.get("881869572741931029")
+        const submarine = client.emojis.cache.get("881869584033017916")
+        const island = client.emojis.cache.get("881869559928340550")
+        const subOnIsland = client.emojis.cache.get("881869591297523773")
+
+        let xpBar = [];
+
+        if (user.percentageToNextLvl < 90) {
+            xpBar.unshift(subOnIsland)
+            times(9)(() => xpBar.unshift(ocean))
+        } else {
+            xpBar.unshift(island)
+            times(Math.ceil((100 - user.percentageToNextLvl) / 10) - 1)(() => xpBar.unshift(ocean))
+            xpBar.unshift(submarine)
+            times(Math.ceil(user.percentageToNextLvl / 10) - 1)(() => xpBar.unshift(ocean))
+        }
+
+        let embed = new Discord.MessageEmbed()
+            .setAuthor(`${user.Nickname} #${rank}`, user.profilePic)
+            .setColor(user.colour)
+            .setDescription(`Level ${user.level} \n${xpBar.join('')}\n[Leaderboard](https://thecaptain.ga/leaderboard?id=${guildID}) | [Invite me](https://discordapp.com/oauth2/authorize?client_id=488418871745970177&scope=bot&permissions=8) | [GitHub](https://github.com/Hab3925/Cap)`)
+            .setFooter(`${user.xp}xp / ${user.requieredXp}xp`)
+            .setTimestamp()
+
+        return embed;
+    }
 }
