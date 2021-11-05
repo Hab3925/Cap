@@ -3,7 +3,7 @@ module.exports.run = async (client, message, args, prefix, con) => {
 }
 exports.help = {
     name: "mfaq",
-    desc: "shows how many members there are on the server",
+    desc: "reference the <#831103119252520960> channel",
     aliases: ['moddingfaq', 'mod'],
     permLvl: 0,
     hidden: false,
