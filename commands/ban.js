@@ -7,7 +7,7 @@ module.exports.run = async (client, message, args) => {
     if (args[1]) days = args[1]
     if (args[2]) reason = args.join(' ').replace(`${args[0]} ${args[1]}`, '')
     let user = message.mentions.users.first();
-    if (!user) return message.reply('you forgot to mention someone.')
+    if (!user) return message.reply('You forgot to mention someone.')
     if (user.id == client.user.id) return message.reply(`I can't kick myself dude.`)
     let member = message.guild.members.cache.get(user.id);
     if (client.permlvl < 5) {
@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     if (!member.bannable) return message.reply(`I dont have enough permissions to perform this action!`)
     if (!user.bot) user.send(`You have been Banned from **${message.guild.name}** by <@${message.author.id}> for **${reason}**!`)
     await message.guild.member(user).ban({
-        days: days,
+        days: parseInt(days),
         reason: reason
     }).catch(e => {
         if (e.code == 50013) return message.reply(`I dont have enough permissions to perform this action!`)

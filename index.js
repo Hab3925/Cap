@@ -4,9 +4,11 @@ const useDatabase = true;
 const token = isTesting ? "cog" : "cap";
 const loginToken = process.env[token];
 
+const { exit } = require('process');
+
 if (!loginToken) {
 	console.log(`Error: No login token set. Please set '${token}' to a valid token.`);
-	return;
+	exit()
 }
 
 // Uncomment to test regex only.
