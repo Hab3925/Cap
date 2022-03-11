@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args) => {
 
     if (!searchTerm) return message.channel.send("Seems you forgot to include a searchterm!")
     let msg = await message.channel.send('Searching...')
-    let { body } = await superagent.get('http://volc-wiki.brutsches.com/pages.json')
+    let { body } = await superagent.get('https://wiki.volcanoids.com/pages.json')
 
     let searchResult = search(searchTerm, body)
 
@@ -18,7 +18,7 @@ module.exports.run = async (client, message, args) => {
     searchResult.forEach(item => {
         if(item.type == "item"){
             itemObj.push(item)
-            items.push(`[${item.name}](http://volc-wiki.brutsches.com/doku.php?id=${item.path})`)
+            items.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
         }
     })
 
@@ -30,16 +30,16 @@ module.exports.run = async (client, message, args) => {
 
         let singleItemEmbed = new Discord.MessageEmbed()
         .setTitle(item.name)
-        .setURL(`http://volc-wiki.brutsches.com/doku.php?id=${item.path}`)
+        .setURL(`https://wiki.volcanoids.com/doku.php?id=${item.path}`)
         .setDescription(item.description.replace(/\n/gi, " "))
-        .setThumbnail(`http://volc-wiki.brutsches.com/lib/exe/fetch.php?media=${item.imagePath}`)
+        .setThumbnail(`https://wiki.volcanoids.com/lib/exe/fetch.php?media=${item.imagePath}`)
 
         return message.channel.send(singleItemEmbed)
     }else if (items.length < 10) {
         embed.addField("\u200B", item.join("\n"))
         return message.channel.send(embed)
     }else {
-        splitArray(recipes, 10).forEach(list => {
+        splitArray(items, 10).forEach(list => {
             embed.addField("\u200B", list.join("\u3000\u3000\u3000\u3000\r\n"), true)
         })
         return message.channel.send(embed)

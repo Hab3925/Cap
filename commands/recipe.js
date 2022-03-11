@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args) => {
 
     if (!searchTerm) return message.channel.send("Seems you forgot to include a searchterm!")
     let msg = await message.channel.send('Searching...')
-    let { body } = await superagent.get('http://volc-wiki.brutsches.com/pages.json')
+    let { body } = await superagent.get('https://wiki.volcanoids.com/pages.json')
 
     let searchResult = search(searchTerm, body)
 
@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args) => {
     searchResult.forEach(item => {
         if(item.type == "recipe"){
             recipeObj.push(item)
-            recipes.push(`[${item.name}](http://volc-wiki.brutsches.com/doku.php?id=${item.path})`)
+            recipes.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
         }
     })
     
@@ -29,12 +29,12 @@ module.exports.run = async (client, message, args) => {
 
         let singleItemEmbed = new Discord.MessageEmbed()
         .setTitle(recipe.name)
-        .setURL(`http://volc-wiki.brutsches.com/doku.php?id=${recipe.path}`)
+        .setURL(`https://wiki.volcanoids.com/doku.php?id=${recipe.path}`)
         .setDescription(recipe.description.replace(/\n/gi, " "))
         .addField("Required Items:", `-\u3000${fixIndent(recipe.requiredItems.join("\r\n-\u3000"))}`, true)
         .addField("Crafted in:", `-\u3000${fixIndent(recipe.craftedIn.join("\r\n-\u3000"))}`, true)
         .addField("Required Upgrades:", `-\u3000${fixIndent(recipe.requiredUpgrades.join("\r\n-\u3000"))}`, true)
-        .setThumbnail(`http://volc-wiki.brutsches.com/lib/exe/fetch.php?media=${recipe.imagePath}`)
+        .setThumbnail(`https://wiki.volcanoids.com/lib/exe/fetch.php?media=${recipe.imagePath}`)
 
         return message.channel.send(singleItemEmbed)
     }
