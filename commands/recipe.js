@@ -12,20 +12,16 @@ module.exports.run = async (client, message, args) => {
     if (!searchResult) return msg.edit("Nothing on the wiki matched your search!")
     msg.delete()
 
-    let recipeObj = []
     let recipes = []
     searchResult.forEach(item => {
-        if(item.type == "recipe"){
-            recipeObj.push(item)
-            recipes.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
-        }
+        recipes.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
     })
-    
+        
     let embed = new Discord.MessageEmbed()
     .setTitle("Search Results")
 
     if (recipes.length < 2){
-        let recipe = recipeObj[0]
+        let recipe = searchResult[0]
 
         let singleItemEmbed = new Discord.MessageEmbed()
         .setTitle(recipe.name)
@@ -42,7 +38,7 @@ module.exports.run = async (client, message, args) => {
         embed.addField("\u200B", recipes.join("\n"))
         return message.channel.send(embed)
     } else {
-        splitArray(recipes, 10).forEach(list => {
+        splitArray(recipes, 5).forEach(list => {
             embed.addField("\u200B", list.join("\u3000\u3000\u3000\u3000\r\n"), true)
         })
         return message.channel.send(embed)
@@ -51,11 +47,19 @@ module.exports.run = async (client, message, args) => {
 
 function search(searchTerm, body){
     let result = [];
-    body.forEach(item => {
-        if (item.name.toUpperCase().match(searchTerm.toUpperCase())) {
-            result.push(item)
+    let exactMatch = new RegExp(`^${searchTerm.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, "gi")
+    let searchRegex = new RegExp(`${searchTerm.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, "gi")
+
+    for (let i = 0; i < body.length; i++){
+        if (body[i].type != "recipe") continue
+        if (body[i].name.toUpperCase().match(exactMatch)) {
+            result = []
+            result.push(body[i])
+            break
+        } else if (body[i].name.toUpperCase().match(searchRegex)) {
+            result.push(body[i])
         }
-    })
+    }
 
     if (!result[0]) {
         return null;

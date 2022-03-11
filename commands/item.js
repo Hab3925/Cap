@@ -48,11 +48,19 @@ module.exports.run = async (client, message, args) => {
 
 function search(searchTerm, body){
     let result = [];
-    body.forEach(item => {
-        if (item.name.toUpperCase().match(searchTerm.toUpperCase())) {
-            result.push(item)
+    let exactMatch = new RegExp(`^${searchTerm.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, "gi")
+    let searchRegex = new RegExp(`${searchTerm.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, "gi")
+
+    for (let i = 0; i < body.length; i++){
+        if (body[i].type != "recipe") continue
+        if (body[i].name.toUpperCase().match(exactMatch)) {
+            result = []
+            result.push(body[i])
+            break
+        } else if (body[i].name.toUpperCase().match(searchRegex)) {
+            result.push(body[i])
         }
-    })
+    }
 
     if (!result[0]) {
         return null;
