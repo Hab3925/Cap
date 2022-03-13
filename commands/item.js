@@ -12,21 +12,17 @@ module.exports.run = async (client, message, args) => {
     if (!searchResult) return msg.edit("Nothing on the wiki matched your search!")
     msg.delete()
 
-    let itemObj = []
     let items = []
     
     searchResult.forEach(item => {
-        if(item.type == "item"){
-            itemObj.push(item)
-            items.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
-        }
+        items.push(`[${item.name}](https://wiki.volcanoids.com/doku.php?id=${item.path})`)
     })
 
     let embed = new Discord.MessageEmbed()
     .setTitle("Search Results")
 
     if(items.length < 2) {
-        let item = itemObj[0]
+        let item = searchResult[0]
 
         let singleItemEmbed = new Discord.MessageEmbed()
         .setTitle(item.name)
@@ -52,7 +48,7 @@ function search(searchTerm, body){
     let searchRegex = new RegExp(`${searchTerm.toUpperCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, "gi")
 
     for (let i = 0; i < body.length; i++){
-        if (body[i].type != "recipe") continue
+        if (body[i].type != "item") continue
         if (body[i].name.toUpperCase().match(exactMatch)) {
             result = []
             result.push(body[i])
