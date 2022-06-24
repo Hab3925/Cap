@@ -16,12 +16,12 @@ module.exports = (client, token) => {
     let outputArray = [];
     try {
       const data = await rest.get(
-        Routes.guild(guildId) + "/auto-moderation/rules?limit=" + limit
+        Routes.guildAutoModerationRules(guildId) + "?limit=" + limit
       );
       array = data;
       array.forEach((e) => {
         if (e.trigger_type == 1) {
-          e.trigger_metadata.keyword_filter.forEach((i) => {
+          e.forEach((i) => {
             outputArray.push(i);
           });
         }
