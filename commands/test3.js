@@ -1,7 +1,5 @@
 module.exports.run = async (client, message, args, prefix, con) => {
-    message.channel.send(client.makekey(5))
-
-    //client.achievements()
+    message.channel.send(client.rankembed4())
 }
 exports.help = {
     name: "test3",

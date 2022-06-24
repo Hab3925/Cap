@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
         return message.channel.send(embed)
     }
 
-    if (args[0] == "delete" || args[0] == "remove") {
+    if (args[0] == "delete" || args[0] == "remove" || args[0] == "enable") {
         if (!args[1]) return message.channel.send(`You didn't tell me what channel to remove! \`Usage: ${exports.help.usage}\``)
         if (!message.guild.channels.cache.has(args[1].replace(/<|#|>/gm, ""))) return message.channel.send("You didnt provide a valid channel!")
         if (!channels.includes(args[1].replace(/<|#|>/gm, ""))) return message.channel.send(`XP isnt disabled in this channel!`)

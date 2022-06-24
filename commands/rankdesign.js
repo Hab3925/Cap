@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                 .addField('Rankcard layoutpresets', `To select the rankcard simply react with ${checkmark}\n To view different cards, you can flip the pages by using ${arrowleft} and ${arrowright} \nThe card with with the ${checkmark} reaction is the one you currently use.`)
                 .setTimestamp()
                 .setColor('#C54816')
-            const cardDisplay = await message.channel.send(client.rankembed1(user, rank));
+            const cardDisplay = await message.channel.send(client.gearrank(user, rank));
             const controllpanel = await message.channel.send(embed);
 
             await controllpanel.react(arrowleft);
@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
 
             setTimeout(() => {
                 const collector = controllpanel.createReactionCollector(r => {
-                    
+
                     if (!r.users.cache.has(message.author.id)) return r.users.cache.forEach(u => {
                         if (u.id !== client.user.id) r.users.remove(u);
                     })
@@ -72,7 +72,8 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                             });
                             con.query(`UPDATE ${table} SET rankCard = ${state[0]} WHERE UserID = ${message.author.id}`);
                             if (state[0] == 0) cardname = '**Gears**';
-                            else cardname = '**Lava**'
+                            else if (state[0] == 1) cardname = '**Lava**'
+                            else cardname = "**Drill**"
                             message.reply(`Rankcard design changed to ${cardname}`);
                             collector.stop();
                             cardDisplay.delete({
@@ -97,7 +98,7 @@ module.exports.run = async (client, message, args, prefix, con, table) => {
                                     timeout: 5000
                                 })
                             });
-                            if (state[0] == 1) return;
+                            if (state[0] == 3) return;
                             state.push(state[0] + 1);
                             state.shift();
                             cardDisplay.edit(client.rankcard(user, rank, message.guild.id, state[0]))

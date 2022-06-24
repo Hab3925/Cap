@@ -69,11 +69,13 @@ module.exports = (client, useDatabase) => {
         if (design == undefined) design = user.rankCard;
         switch (design) {
             case 0:
-                return client.rankembed1(user, rank, guildID)
+                return client.gearrank(user, rank, guildID)
             case 1:
-                return client.rankembed3(user, rank, guildID)
+                return client.lavarank(user, rank, guildID)
             case 2:
-                return client.rankembed4(user, rank, guildID)
+                return client.drillrank(user, rank, guildID)
+            case 3:
+                return client.submarinerank(user, rank, guildID)
         }
     }
 

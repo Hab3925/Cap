@@ -27,17 +27,17 @@ module.exports.run = async (client, message, args) => {
         return msg.edit('I am unable to generate any memes at the moment :sob: \nPlease check in later!');
     }
 
-    let rnd = Math.floor(Math.random() * body.data.children.length)
-    let img = body.data.children[rnd].data.url;
-    let title = body.data.children[rnd].data.title;
-    let link = 'https://reddit.com' + body.data.children[rnd].data.permalink;
+    let rnd = Math.floor(Math.random() * body.body.data.children.length)
+    let img = body.body.data.children[rnd].data.url;
+    let title = body.body.data.children[rnd].data.title;
+    let link = 'https://reddit.com' + body.body.data.children[rnd].data.permalink;
 
 
-    if (body.data.children[rnd].data.is_video) {
-        let rnd = Math.floor(Math.random() * body.data.children.length)
-        let img = body.data.children[rnd].data.url;
-        let title = body.data.children[rnd].data.title;
-        let link = 'https://reddit.com' + body.data.children[rnd].data.permalink;
+    if (body.body.data.children[rnd].data.is_video) {
+        let rnd = Math.floor(Math.random() * body.body.data.children.length)
+        let img = body.body.data.children[rnd].data.url;
+        let title = body.body.data.children[rnd].data.title;
+        let link = 'https://reddit.com' + body.body.data.children[rnd].data.permalink;
 
         let embed = new Discord.MessageEmbed()
             .setColor('#28DFAF')

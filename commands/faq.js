@@ -4,7 +4,7 @@ module.exports.run = async (client, message, args) => {
 
 exports.help = {
     name: "faq",
-    desc: "refrence the <#454972890299891723> channel",
+    desc: "reference the <#454972890299891723> channel",
     aliases: [],
     permLvl: 0,
     hidden: false,

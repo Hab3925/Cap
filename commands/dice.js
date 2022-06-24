@@ -6,7 +6,7 @@ module.exports.run = async (client, message) => {
     })
     message.channel.send('Rolling... ' /* + rolling */ ).then(msg => {
         let rnd = Math.floor(Math.random() * 6) + 1;
-        let emojiname = rnd + 'd'
+        let emojiname = 'D' + rnd
         const dice = client.emojis.cache.find(emoji => emoji.name === `${emojiname}`)
         setTimeout(() => {
             msg.delete()
