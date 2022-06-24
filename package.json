@@ -14,7 +14,10 @@
     "superagent": "^6.1.0"
   },
   "scripts": {
-    "test": "tsc typescript/*.ts && node index"
+    "test": "npm run compile-individual && node index",
+    "compile": "npm run compile-individual",
+    "compile-individual": "tsc typescript/classes.ts typescript/enums.ts typescript/capRoutes.ts",
+    "start": "npm run compile && node index"
   },
   "author": "Hab",
   "license": "ISC",

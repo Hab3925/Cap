@@ -1,6 +1,6 @@
 module.exports = (client, token) => {
   const { REST } = require("@discordjs/rest");
-  const { Routes } = require("../typescript/routes");
+  const { Routes } = require("../typescript/capRoutes");
   const { KeywordTypes } = require("../typescript/enums");
   const { CapErrors } = require("../typescript/classes");
 
