@@ -1,3 +1,5 @@
+const { stat } = require('fs')
+
 module.exports.run = async (client, message, args) => {
     let searchTerm = args.join(' ')
     const superagent = require('superagent')
@@ -23,16 +25,38 @@ module.exports.run = async (client, message, args) => {
 
     if(items.length < 2) {
         let item = searchResult[0]
+        let statKeys = Object.keys(item.stats)
+        let longestName = 0
+        let stats = []
+
+        statKeys.forEach(stat => {
+            if (stat.length > longestName) longestName = stat.length + 4
+        })
+
+        statKeys.forEach(key => {
+            let statText = `${key}:    `
+            let spaces = longestName - key.length - 4
+
+            for (i = 0; i < spaces; i++) statText += " "
+
+            statText += item.stats[key]
+            stats.push(statText)
+        })    
+
+        //console.log(stats)
 
         let singleItemEmbed = new Discord.MessageEmbed()
         .setTitle(item.name)
         .setURL(`https://wiki.volcanoids.com/doku.php?id=${item.path}`)
-        .setDescription(item.description.replace(/\n/gi, " "))
         .setThumbnail(`https://wiki.volcanoids.com/lib/exe/fetch.php?media=${item.imagePath}`)
+        .setDescription(`${item.description.replace(/\n/gi, " ")}`)
+        .addField(`Stats:`, `\`\`\`${stats.join("\n")}\`\`\``)
+
+
 
         return message.channel.send(singleItemEmbed)
     }else if (items.length < 10) {
-        embed.addField("\u200B", item.join("\n"))
+        embed.addField("\u200B", items.join("\n"))
         return message.channel.send(embed)
     }else {
         splitArray(items, 10).forEach(list => {
