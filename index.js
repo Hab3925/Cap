@@ -4,11 +4,13 @@ const useDatabase = true;
 const token = isTesting ? "cog" : "cap";
 const loginToken = process.env[token];
 
-const { exit } = require('process');
+const { exit } = require("process");
 
 if (!loginToken) {
-	console.log(`Error: No login token set. Please set '${token}' to a valid token.`);
-	exit()
+  console.log(
+    `Error: No login token set. Please set '${token}' to a valid token.`
+  );
+  exit();
 }
 
 // Uncomment to test regex only.
@@ -17,9 +19,14 @@ if (!loginToken) {
 //constants
 const Discord = require('discord.js');
 const client = new Discord.Client({
-	ws: {
-		intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS', 'GUILD_MESSAGE_REACTIONS']
-	}
+  ws: {
+    intents: [
+      "GUILDS",
+      "GUILD_MESSAGES",
+      "GUILD_MEMBERS",
+      "GUILD_MESSAGE_REACTIONS",
+    ],
+  },
 });
 const {
 	promisify
@@ -33,11 +40,11 @@ let GSTable;
 
 const mysql = require("mysql");
 let con = mysql.createConnection({
-	host: process.env.capConH,
-	user: process.env.capConU,
-	password: process.env.capConP,
-	database: process.env.capConD,
-	charset: "utf8mb4_unicode_ci"
+  host: process.env.capConH,
+  user: process.env.capConU,
+  password: process.env.capConP,
+  database: process.env.capConD,
+  charset: "utf8mb4_unicode_ci",
 });
 
 //enmap setup
@@ -67,6 +74,8 @@ client.disabledXp = new Enmap({
 client.mute = new Enmap({
 	name: "mute"
 })
+
+require("./utility/websocket.js")(client, loginToken);
 
 //When client is ready ( on bot startup )
 client.on("ready", async () => {

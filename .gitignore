@@ -3,3 +3,4 @@ desktop.ini
 package-lock.json
 data
 .vscode
+storage/config.json
